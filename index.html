@@ -1,0 +1,826 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>MR.HACKER — Game Selector / PLATFORM</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+  
+  <script src="https://www.gstatic.com/firebasejs/8.6.8/firebase-app.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/8.6.8/firebase-database.js"></script>
+
+  <style>
+    /* STYLE SHEET (Premium Look & Feel)
+    */
+    :root{
+      --accent1:#ff2d55;
+      --accent2:#0a84ff; /* Blue for SMALL */
+      --neon1:#00f2ff;
+      --neon2:#ff3aff;
+      --gold:#f6d365;
+      --green:#2ee56a; /* Green for BIG */
+      --danger:#ff6b6b;
+      --whatsapp-color:#25D366;
+      --telegram-color:#0088cc;
+      --youtube-color:#FF0000;
+      --pay-color:#00c6ff; 
+      --bg-dark: #0e0e11;
+      --bg-light: #1e1e24;
+    }
+    *{box-sizing:border-box;margin:0;padding:0;font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;}
+    
+    html,body{height:auto; min-height:100vh;} 
+    body{
+      background:var(--bg-dark);
+      -webkit-font-smoothing:antialiased;
+      -moz-osx-osx-smoothing:grayscale;
+      display:flex;
+      align-items:flex-start; 
+      justify-content:center;
+      padding:20px;
+      color:#fff;
+      padding-bottom: 50px; 
+    }
+    #particles-js{
+      position:fixed;left:0;top:0;width:100%;height:100%;z-index:0;
+      background:linear-gradient(180deg,var(--bg-dark) 0%, #1a1a20 100%);
+    }
+    .wrap{
+      position:relative;
+      z-index:2;
+      width:100%;
+      max-width:420px;
+      margin:auto;
+      padding-top: 10px; 
+    }
+    .card{
+      background:var(--bg-light);
+      border-radius:18px;
+      padding:22px;
+      border:1px solid rgba(255,255,255,0.1);
+      box-shadow:0 10px 30px rgba(0,0,0,0.6);
+      text-align:center;
+    }
+    .top-btn{
+      display:inline-block;background:rgba(255,255,255,0.15);color:var(--neon1);padding:10px 18px;border-radius:999px;font-weight:700;border:none;cursor:pointer;backdrop-filter:blur(6px);
+      box-shadow: 0 0 10px rgba(0, 255, 255, 0.3);
+    }
+    .vip-text{font-size:18px;margin:16px 0 18px;font-weight:700;line-height:1.4;}
+    .start-btn{
+      display:block;width:100%;background:linear-gradient(180deg,var(--accent1),#d61f3f);padding:12px 16px;border-radius:28px;border:none;font-weight:800;font-size:17px;cursor:pointer;margin-bottom:14px;
+      box-shadow:0 6px 16px rgba(255, 45, 85, 0.6);
+    }
+    .social-links {
+        display: flex;
+        justify-content: center;
+        gap: 20px; 
+        margin-top: 18px; 
+    }
+    .social-links a {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 45px;
+        height: 45px;
+        border-radius: 50%;
+        color: #fff;
+        font-size: 24px;
+        text-decoration: none;
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.5);
+        transition: transform 0.2s, box-shadow 0.2s;
+    }
+    .social-links a.whatsapp { background: var(--whatsapp-color); }
+    .social-links a.telegram { background: var(--telegram-color); }
+    .social-links a.youtube { background: var(--youtube-color); }
+    .social-links a:hover {
+        transform: scale(1.1);
+        box-shadow: 0 6px 15px rgba(0, 0, 0, 0.7);
+    }
+    /* VIP Modal Styling */
+    .modal{position:fixed;left:0;top:0;width:100%;height:100%;display:none;align-items:center;justify-content:center;background:rgba(0,0,0,0.8);z-index:6;backdrop-filter:blur(8px);}
+    .payment-modal-content{
+        width:92%;max-width:320px;background:var(--bg-light);border-radius:18px;
+        padding:25px;border:2px solid var(--danger);text-align:center;
+        box-shadow: 0 10px 40px rgba(255, 107, 107, 0.3);
+    }
+    .payment-modal-content h3{
+        color:var(--neon1);margin-bottom:10px;text-transform:uppercase;
+        font-size:16px;font-weight:800;
+        text-shadow: 0 0 5px var(--neon1);
+    }
+    .price-tag{
+        font-size:42px;font-weight:900;margin:15px 0 20px;
+        color:var(--gold);
+        text-shadow: 0 0 10px rgba(246, 211, 101, 0.8);
+    }
+    .pay-btn{
+        display:block;width:100%;background:linear-gradient(90deg,var(--pay-color),#008eff);
+        padding:12px 16px;border-radius:28px;border:none;font-weight:800;
+        font-size:18px;cursor:pointer;margin-top:10px;
+        box-shadow:0 6px 20px rgba(0, 198, 255, 0.4);
+        margin-bottom: 15px; 
+    }
+    .contact-btn {
+        display:block;width:100%;background:var(--whatsapp-color);
+        padding:12px 16px;border-radius:28px;border:none;font-weight:800;
+        font-size:18px;cursor:pointer;margin-top:10px;
+        box-shadow:0 6px 20px rgba(37, 211, 102, 0.4);
+        text-decoration: none;
+        color: #fff;
+        margin-bottom: 25px; 
+    }
+    .contact-info {
+        font-size: 13px;
+        color: #ddd;
+        margin-top: 10px;
+        line-height: 1.4;
+    }
+    .code-input-box {
+        width: 100%;
+        padding: 10px;
+        border-radius: 10px;
+        border: 1px solid rgba(255, 255, 255, 0.2);
+        background: rgba(0, 0, 0, 0.3);
+        color: var(--gold);
+        font-size: 18px;
+        text-align: center;
+        margin-bottom: 15px;
+        font-weight: 700;
+        letter-spacing: 2px;
+    }
+    .unlock-vip-btn {
+        display: block;
+        width: 100%;
+        background: linear-gradient(180deg, var(--gold), #d4a938);
+        padding: 12px 16px;
+        border-radius: 28px;
+        border: none;
+        font-weight: 800;
+        font-size: 18px;
+        cursor: pointer;
+        color: #000;
+        box-shadow: 0 6px 20px rgba(246, 211, 101, 0.4);
+    }
+    .short-notice-box {
+      margin-bottom: 15px; padding: 12px; background: rgba(0, 0, 0, 0.3); border-radius: 8px; border: 1px dashed var(--neon1); font-size: 14px; font-weight: 600; line-height: 1.5; color: #fff; text-align: center;
+    }
+    /* Game Page Styling */
+    .modal-content{width:92%;max-width:360px;background:var(--bg-light);border-radius:14px;padding:16px;border:1px solid rgba(255,255,255,0.12);}
+    .modal h3{color:var(--neon1);margin-bottom:12px;text-align:center;}
+    .game-option{padding:12px;border-radius:10px;margin:8px 0;background:rgba(0,0,0,0.25);cursor:pointer;border:1px solid rgba(255,255,255,0.06);font-weight:700;}
+    .game-option:hover{background:linear-gradient(90deg,var(--neon1),var(--neon2));color:#000;}
+    .page-game{
+      display:none;
+      width:100%;
+      max-width:420px;
+      margin:0 auto;
+      color:#fff;
+      position:relative;
+      z-index:2;
+      padding:18px 18px 40px 18px; 
+    }
+    .vip-status{
+        text-align: center;
+        font-size: 22px; 
+        font-weight: 900;
+        margin-top: 50px; 
+        margin-bottom: 15px; 
+        color: var(--neon2);
+        text-shadow: 
+            0 0 5px var(--neon1),
+            0 0 10px var(--neon1),
+            0 0 20px var(--neon2);
+        animation: pulseNeon 1.5s infinite alternate;
+    }
+    @keyframes pulseNeon {
+        0% { opacity: 0.8; text-shadow: 0 0 5px var(--neon1), 0 0 10px var(--neon1); }
+        100% { opacity: 1; text-shadow: 0 0 8px #fff, 0 0 15px var(--neon1), 0 0 30px var(--neon2); }
+    }
+    .logo-box{ display:flex;align-items:center;flex-direction:column;margin-top:14px;margin-bottom:6px; }
+    .logo-ic{
+      width:150px;height:150px;border-radius:18px; display:flex;align-items:center;justify-content:center;font-weight:900;font-size:42px;box-shadow:0 10px 30px rgba(0,0,0,0.6);
+      background:linear-gradient(180deg,#dd2a2a,#b31c1c); 
+    }
+    .game-title{margin-top:12px;font-size:20px;font-weight:800; color:var(--neon1);}
+    .connected-row{display:flex;align-items:center;justify-content:space-between;margin-top:14px;padding:8px 6px;}
+    .connected-row .left{font-weight:700;}
+    .connected-row .status{color:var(--green);font-weight:800; text-shadow: 0 0 5px rgba(46, 229, 106, 0.5);}
+    .info-row{ margin-top:6px; padding:12px 8px; border-top:1px solid rgba(255,255,255,0.06); border-bottom:1px solid rgba(255,255,255,0.04); text-align: center; }
+    .info-row .label{ font-size:14px; color:#ddd; margin-bottom:6px; display: block; }
+    .period-row{ display:flex; align-items:center; margin-top:10px; justify-content: center; }
+    .period-input{ max-width: 250px; width: 100%; padding:10px; border-radius:10px; border:1px solid var(--accent2); background:rgba(255,255,255,0.02); color:#fff; font-weight:800; font-size:16px; text-align: center; }
+    .big-start{ display:block;margin:18px auto;padding:14px 28px;background:linear-gradient(90deg,#2b238f,#0d00ff);border-radius:10px;border:3px solid rgba(255,255,255,0.06);font-weight:900;font-size:18px;cursor:pointer;box-shadow:0 8px 30px rgba(0,0,0,0.6); }
+    .small-note{font-size:13px;color:#ddd;margin:12px 0;line-height:1.4;text-align:left;}
+    .btn-list{ display:flex; flex-direction:column; gap:12px; margin-top:12px; margin-bottom: 20px; }
+    .btn-list .btn{ background:linear-gradient(180deg,#3a2a8a,#0b0b4b);padding:12px;border-radius:10px;text-align:center;font-weight:800;cursor:pointer;border:3px solid rgba(0,0,0,0.2); box-shadow:0 10px 20px rgba(0,0,0,0.6); }
+    .result-box{ margin-top:14px;padding:12px;border-radius:12px;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.06);text-align:center; min-height:54px;display:flex;align-items:center;justify-content:center;flex-direction:column; }
+    .result-text{font-weight:900;font-size:24px; text-shadow: 0 0 5px #fff;}
+    .result-small{color:var(--accent2);}
+    .result-big{color:var(--green);}
+    
+    /* --- BACK BUTTON FIX --- */
+    .back-btn{ 
+        position:absolute;left:14px;top:14px;
+        background:var(--danger); 
+        color:#fff;
+        border:none;
+        padding:8px 12px;
+        border-radius:8px;
+        font-weight:700;
+        cursor:pointer;
+        z-index:8; 
+    }
+    /* --- LOGOUT BUTTON (Kept same) --- */
+    .logout-btn{ 
+        position:absolute;right:14px;top:14px;
+        background:var(--danger);
+        color:#fff;
+        border:none;
+        padding:8px 12px;
+        border-radius:8px;
+        font-weight:700;
+        cursor:pointer;
+        z-index:8; 
+    }
+    @media (max-width:420px){
+      .logo-ic{width:130px;height:130px;font-size:36px;}
+      .big-start{font-size:16px;}
+    }
+  </style>
+</head>
+<body onload="loadVipStatus()">
+  <div id="particles-js"></div>
+
+  <div class="wrap">
+    <div class="card" id="mainCard">
+      <button class="top-btn" id="selectGameBtn">SELECT GAME 🎮</button>
+      
+      <div class="vip-text" id="selectedGameText">LOADING VIP STATUS...</div>
+      
+      <button class="start-btn" id="startNowBtn">START</button>
+      
+      <div class="new-user" style="margin-top:10px;font-weight:700;">NEW USER?</div>
+      
+      <div class="social-links">
+        <a href="https://whatsapp.com/channel/0029VbBN4JdJZg3xyQ0p9H2w" target="_blank" class="whatsapp" title="Join on WhatsApp">
+          <i class="fab fa-whatsapp"></i>
+        </a>
+        <a href="https://t.me/+jYnT0N0yG6pjOGFl" target="_blank" class="telegram" title="Join our Telegram">
+          <i class="fab fa-telegram-plane"></i>
+        </a>
+        <a href="https://youtube.com/@mr_hacker__1m_302?si=lWGsj5WDO1gKiaML" target="_blank" class="youtube" title="Subscribe on YouTube">
+          <i class="fab fa-youtube"></i>
+        </a>
+      </div>
+    </div>
+
+    <div class="page-game" id="gamePage">
+      <button class="back-btn" id="backToMain">← Back</button>
+      <button class="logout-btn" id="logoutBtn">Logout 🚪</button>
+      
+      <div class="vip-status">YOUR VIP USER 🫀</div>
+
+      <div style="height:14px;"></div>
+      <div style="text-align:center;">
+        <div class="logo-box">
+          <div class="logo-ic" id="gameLogoIc">91</div>
+          <div class="game-title" id="gameTitle">91club (Hack)</div>
+        </div>
+      </div>
+
+      <div class="connected-row">
+        <div class="left">Server :</div>
+        <div class="status">Connected ✓</div>
+      </div>
+
+      <div class="info-row">
+        <div style="text-align:center;">
+          <div>
+            <div class="label" style="font-size:16px; font-weight:700;">ENTER 3 DIGIT PERIOD :</div>
+          </div>
+        </div>
+
+        <div class="period-row" style="margin-top:8px;">
+          <input id="periodInput" class="period-input" type="number" placeholder="" value="" />
+        </div>
+      </div>
+
+      <div class="result-box" id="resultBox">
+        <div style="font-size:13px;color:#bbb;">Result outcome will appear here</div>
+        <div class="result-text" id="resultText" style="margin-top:8px;">—</div>
+      </div>
+
+      <button class="big-start" id="startPrediction">START</button>
+
+      <div class="small-note">
+        Create a new account by clicking on 'Register' button, if you use this mod in your old account, then mod will not work.
+        <br><br>
+        'Register' बटन पर क्लिक करके नया account बनाएं, यदि आप इस मॉड का उपयोग अपने पुराने account में करते हैं, तो मॉड काम नहीं करेगा।
+      </div>
+
+      <div class="btn-list">
+        <div class="btn" id="registerBtn">Register</div>
+        <div class="btn" id="telegramBtn">Join Telegram</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="modal" id="paymentModal">
+    <div class="payment-modal-content">
+      <h3>PAYMENT SUCCESSFUL AFTER UNLOCK VIP</h3> 
+      
+      <div class="price-tag">₹198</div>
+      
+      <button class="pay-btn" id="payNowBtn">PAY NOW</button>
+      
+      <div class="short-notice-box">
+          <span style="color:var(--gold); font-weight:700;">✅ PAYMENT DONE?</span><br>
+          तुरंत **CONTACT ADMIN** पर क्लिक करें और **UTR/SS** भेजें। 
+          Admin कोड देगा, जिसे नीचे डालकर VIP अनलॉक करें।
+      </div>
+
+      <a href="https://t.me/MR_HACKER_302" class="contact-btn" target="_blank" id="contactAdminBtn">
+        <i class="fab fa-whatsapp"></i> CONTACT ADMIN (UTR/SS)
+      </a>
+
+      <div class="contact-info" style="margin-top: 5px; margin-bottom: 10px;">
+        <span style="color:var(--neon1); font-weight:700;">VIP CODE RECEIVED?</span> यहाँ डालें:
+      </div>
+      
+      <input type="number" id="vipCodeInput" class="code-input-box" placeholder="6 Digit Code" maxlength="6" />
+      
+      <button class="unlock-vip-btn" id="unlockVipBtn">UNLOCK VIP</button>
+      
+    </div>
+  </div>
+  <div class="modal" id="gameModal">
+    <div class="modal-content">
+      <h3>🎮 Select Game Platform</h3>
+      <div class="game-option">JALWA GAME</div>
+      <div class="game-option">BDG GAME</div>
+      <div class="game-option">TASAN WIN</div>
+      <div class="game-option">91 CLUB</div>
+      <div class="game-option">ALL PLATFORM</div>
+    </div>
+  </div>
+  <script src="https://cdn.jsdelivr.net/npm/particles.js@2.0.0/particles.min.js"></script>
+  <script>
+    // Particle Initialization (Matching Admin Panel's Premium Look)
+    particlesJS("particles-js", {
+        "particles": {
+            "number": {"value": 70, "density": {"enable": true, "value_area": 800}},
+            "color": {"value": ["#00ffff", "#ff00ff", "#f6d365", "#ffffff"]},
+            "shape": {"type": "circle"},
+            "opacity": {"value": 0.5, "anim": {"enable": false}},
+            "size": {"value": 3, "random": true},
+            "line_linked": {"enable": true, "distance": 150, "color": "#0a84ff", "opacity": 0.35, "width": 1},
+            "move": {"enable": true, "speed": 1.5, "direction": "none", "random": false, "straight": false, "out_mode": "out"}
+        },
+        "interactivity": {
+            "detect_on": "canvas",
+            "events": {"onhover": {"enable": true, "mode": "grab"}, "onclick": {"enable": true, "mode": "push"}},
+            "modes": {"grab": {"distance": 140, "line_linked": {"opacity": 1}}, "push": {"particles_nb": 4}}
+        },
+        "retina_detect": true
+    });
+
+
+    // --- CONFIG & GLOBAL STATE (REPLACE WITH YOUR ACTUAL INFO) ---
+    const UPI_ID = 'mdj946865-1@okhdfcbank'; // Your UPI ID
+    const UPI_AMOUNT = '198';
+    const WHATSAPP_NUMBER = 'YOUR_WHATSAPP_NUMBER'; // Your WhatsApp Number
+    const TELEGRAM_USERNAME = 'YOUR_TELEGRAM_USERNAME'; // Your Telegram Username
+    const YOUTUBE_CHANNEL = 'YOUR_YOUTUBE_CHANNEL'; // Your YouTube Channel
+
+    // *************************************************************
+    // FIREBASE CONFIGURATION START (Must match Admin Panel)
+    const firebaseConfig = {
+      apiKey: "AIzaSyA7sfTGPn7iiCrXbK5ESNVVcZr2RJmJ7YU",
+      authDomain: "dark-cyber-63a93.firebaseapp.com",
+      databaseURL: "https://dark-cyber-63a93-default-rtdb.firebaseio.com",
+      projectId: "dark-cyber-63a93",
+      storageBucket: "dark-cyber-63a93.firebase-storage.app",
+      messagingSenderId: "137994980735",
+      appId: "1:137994980735:web:7d933e66b201e98ca95e4a",
+      measurementId: "G-FRN1VD2ESV"
+    };
+
+    firebase.initializeApp(firebaseConfig);
+    const database = firebase.database();
+    const vipCodesRef = database.ref('vip_codes'); 
+    // FIREBASE CONFIGURATION END
+    // *************************************************************
+
+    let isVipUnlocked = false; 
+    let selectedGame = null;
+    let firebaseCodeListener = null; 
+
+    // --- DEVICE ID GENERATOR ---
+    function getDeviceId() {
+        let deviceId = localStorage.getItem('deviceId');
+        if (!deviceId) {
+            deviceId = 'device-' + Date.now().toString(36) + Math.random().toString(36).substr(2, 5);
+            localStorage.setItem('deviceId', deviceId);
+        }
+        return deviceId;
+    }
+
+    const DEVICE_ID = getDeviceId();
+    const UPI_URL = `upi://pay?pa=${UPI_ID}&pn=DARKCYBERVIP&am=${UPI_AMOUNT}&cu=INR&tn=Unlock%20VIP%20Access`;
+
+    // --- GAME DATA MAPPING ---
+    const GAME_DATA = {
+        'JALWA GAME': { logoText: 'JL', logoColor: 'linear-gradient(180deg, #ffc107, #ff9800)', title: 'JALWA GAME (Hack)' },
+        'BDG GAME': { logoText: 'BDG', logoColor: 'linear-gradient(180deg, #00bcd4, #00897b)', title: 'BDG GAME (Hack)' },
+        'TASAN WIN': { logoText: 'TW', logoColor: 'linear-gradient(180deg, #9c27b0, #673ab7)', title: 'TASAN WIN (Hack)' },
+        '91 CLUB': { logoText: '91', logoColor: 'linear-gradient(180deg, #dd2a2a, #b31c1c)', title: '91club (Hack)' }
+    };
+
+    // --- DOM ELEMENTS ---
+    const gameModal = document.getElementById('gameModal'); 
+    const paymentModal = document.getElementById('paymentModal'); 
+    const payNowBtn = document.getElementById('payNowBtn');
+    const contactAdminBtn = document.getElementById('contactAdminBtn'); 
+    const vipCodeInput = document.getElementById('vipCodeInput'); 
+    const unlockVipBtn = document.getElementById('unlockVipBtn'); 
+    const selectGameBtn = document.getElementById('selectGameBtn');
+    const selectedGameText = document.getElementById('selectedGameText');
+    const startNowBtn = document.getElementById('startNowBtn');
+    const mainCard = document.getElementById('mainCard');
+    const gamePage = document.getElementById('gamePage'); 
+    const backToMain = document.getElementById('backToMain');
+    const logoutBtn = document.getElementById('logoutBtn'); 
+    const gameLogoIc = document.getElementById('gameLogoIc');
+    const gameTitle = document.getElementById('gameTitle');
+    
+    // --- UTILITY: Stops the current Firebase listener ---
+    function stopVipCodeListener() {
+        const storedCode = localStorage.getItem('activeVipCode');
+        if (firebaseCodeListener && storedCode) {
+            vipCodesRef.child(storedCode).off('value', firebaseCodeListener);
+            firebaseCodeListener = null; 
+            console.log(`Firebase listener for code ${storedCode} stopped.`);
+        }
+    }
+    
+    // --- VIP EXPIRATION HANDLER ---
+    function handleVipExpiration(title, message) {
+        stopVipCodeListener(); 
+        
+        isVipUnlocked = false;
+        localStorage.removeItem('vipStatus');
+        localStorage.removeItem('vipExpiry');
+        localStorage.removeItem('activeVipCode');
+
+        paymentModal.style.display = 'flex';
+        document.querySelector('#paymentModal h3').innerHTML = `<span style="color:var(--danger);">${title}</span>`;
+        
+        alert(`❌ ${message}\n\nAccess revoked. Please enter a new code.`);
+        
+        updateMainCardForVip(); 
+        goToMainCard();
+    }
+    
+    // 1. VIP Status Checker
+    function loadVipStatus() {
+        stopVipCodeListener(); 
+        
+        const storedStatus = localStorage.getItem('vipStatus');
+        const storedExpiry = localStorage.getItem('vipExpiry');
+        const storedCode = localStorage.getItem('activeVipCode'); 
+        const nowTime = Date.now(); 
+
+        isVipUnlocked = false; 
+
+        if (storedStatus === 'true' && storedExpiry && storedCode) {
+            const expiryTime = parseInt(storedExpiry, 10);
+            
+            if (nowTime >= expiryTime) {
+                handleVipExpiration('KEY EXPIRED 🕰️', 'Your VIP access time has finished.');
+                return; 
+            }
+            
+            firebaseCodeListener = (snapshot) => {
+                const codeData = snapshot.val();
+                const currentNowTime = Date.now(); 
+                
+                if (!codeData) {
+                    setTimeout(() => handleVipExpiration('ADMIN DELETED KEY 🛑', 'This key has been permanently deleted by the Admin. Please contact Admin for a new one.'), 50);
+                    return; 
+                } 
+                
+                if (codeData.isManuallyExpired) {
+                    setTimeout(() => handleVipExpiration('ADMIN DEACTIVATED 🛑', 'This key has been manually deactivated by the Admin. Please contact Admin for a new one.'), 50);
+                    return;
+                } 
+                
+                if (currentNowTime >= codeData.expiryTimestamp) {
+                    setTimeout(() => handleVipExpiration('KEY EXPIRED 🕰️', 'Your VIP access time has finished.'), 50);
+                    return;
+                }
+                
+                isVipUnlocked = true;
+                updateMainCardForVip();
+                paymentModal.style.display = 'none';
+                document.querySelector('#paymentModal h3').innerHTML = 'PAYMENT SUCCESSFUL AFTER UNLOCK VIP';
+
+            };
+            
+            vipCodesRef.child(storedCode).on('value', firebaseCodeListener, (error) => {
+                console.error("Firebase Listener Error:", error);
+                if (!isVipUnlocked) {
+                   handleVipExpiration('CONNECTION ERROR ⚠️', 'Could not verify VIP status due to a connection error. Try again.');
+                }
+            });
+            
+        } else {
+            isVipUnlocked = false;
+            updateMainCardForVip(); 
+        }
+    }
+
+    // 2. VIP Status Display Update
+    function updateMainCardForVip() {
+        if (isVipUnlocked) {
+            const expiryTimestamp = localStorage.getItem('vipExpiry');
+            let expiryText = '';
+
+            if (expiryTimestamp) {
+                 const expiryDate = new Date(parseInt(expiryTimestamp, 10));
+                 const options = { year: 'numeric', month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' };
+                 expiryText = `<br><span style="font-size:12px;font-weight:500;color: #aaa;">Expires: ${expiryDate.toLocaleDateString('en-IN', options)}</span>`;
+            }
+            
+            selectedGameText.innerHTML = `<b style="color:var(--gold);">VIP UNLOCKED! 🔥</b>${expiryText}<br><span style="font-size:13px;font-weight:600;">SELECT GAME TO START</span>`;
+        } else {
+             selectedGameText.innerHTML = `YOU'RE NOT VIP ★<br><span style="font-size:13px;font-weight:600;">CLICK TO START</span>`;
+        }
+    }
+
+    // 3. VIP CODE CHECKER (ADVANCED)
+    unlockVipBtn.addEventListener('click', () => {
+        const enteredCode = vipCodeInput.value.trim();
+
+        if (!enteredCode || enteredCode.length !== 6) {
+            alert('❌ Please enter the 6-digit VIP Code.');
+            return;
+        }
+        
+        unlockVipBtn.textContent = 'Checking...';
+        unlockVipBtn.disabled = true;
+
+        vipCodesRef.child(enteredCode).once('value')
+            .then((snapshot) => {
+                const codeData = snapshot.val();
+                const nowTime = Date.now();
+                
+                if (!codeData) {
+                    alert('❌ Invalid VIP Code. Please check the code.');
+                    return;
+                }
+
+                if (codeData.isManuallyExpired || nowTime > codeData.expiryTimestamp) {
+                    alert('❌ VIP Code Expired or Deactivated! Please contact Admin for a new code.');
+                    return;
+                }
+
+                const activatedDevices = codeData.activatedDevices || {};
+                let activeCount = codeData.activeCount || 0;
+                const deviceLimit = codeData.deviceLimit;
+                let isAlreadyActivated = activatedDevices.hasOwnProperty(DEVICE_ID);
+                
+                if (!isAlreadyActivated && activeCount >= deviceLimit) {
+                    alert(`❌ Device Limit Reached! This code can only be used on ${deviceLimit} device(s).`);
+                    return;
+                }
+
+                // --- SUCCESS: Activate or Re-activate Device ---
+                localStorage.setItem('activeVipCode', enteredCode); 
+                localStorage.setItem('vipStatus', 'true'); 
+                localStorage.setItem('vipExpiry', codeData.expiryTimestamp);
+                
+                if (!isAlreadyActivated) {
+                    const updates = {};
+                    updates[`${enteredCode}/activatedDevices/${DEVICE_ID}`] = true;
+                    vipCodesRef.child(enteredCode).child('activeCount').transaction((currentActiveCount) => {
+                        return (currentActiveCount || 0) + 1;
+                    });
+                    vipCodesRef.update(updates);
+                }
+                
+                isVipUnlocked = true;
+                updateMainCardForVip(); 
+                vipCodeInput.value = ''; 
+                paymentModal.style.display = 'none';
+                
+                const expiryDateDisplay = new Date(codeData.expiryTimestamp).toLocaleDateString('en-IN', { year: 'numeric', month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' });
+                alert(`✅ VIP Access Activated! The code will expire on: ${expiryDateDisplay}`);
+                
+                loadVipStatus(); 
+
+                if (selectedGame) {
+                    gameModal.style.display = 'none';
+                    mainCard.style.display = 'none';
+                    gamePageUpdate(selectedGame);
+                    gamePage.style.display = 'block';
+                } else {
+                    gameModal.style.display = 'flex';
+                }
+            })
+            .catch((error) => {
+                console.error("Firebase read error during unlock:", error);
+                alert('❌ A server error occurred. Please try again or contact Admin.');
+            })
+            .finally(() => {
+                 unlockVipBtn.textContent = 'UNLOCK VIP';
+                 unlockVipBtn.disabled = false;
+            });
+    });
+
+    // --- SETUP & UTILITY FUNCTIONS ---
+    
+    // Setup links
+    if (WHATSAPP_NUMBER !== 'YOUR_WHATSAPP_NUMBER') {
+      document.querySelector('.social-links a.whatsapp').href = `https://wa.me/${WHATSAPP_NUMBER}`;
+      contactAdminBtn.href = `https://wa.me/${WHATSAPP_NUMBER}?text=Hello%2C%20I%20have%20paid%20%E2%82%B9198%20for%20VIP%20Access.%20Please%20find%20my%20UTR%20or%20Screenshot.`;
+    }
+    if (TELEGRAM_USERNAME !== 'YOUR_TELEGRAM_USERNAME') {
+       document.querySelector('.social-links a.telegram').href = `https://t.me/${TELEGRAM_USERNAME}`;
+    }
+    if (YOUTUBE_CHANNEL !== 'YOUR_YOUTUBE_CHANNEL') {
+       document.querySelector('.social-links a.youtube').href = `https://www.youtube.com/channel/${YOUTUBE_CHANNEL}`;
+    }
+
+
+    function gamePageUpdate(gameName) {
+        const data = GAME_DATA[gameName];
+        if (data) {
+            gameLogoIc.textContent = data.logoText;
+            gameLogoIc.style.background = data.logoColor;
+            gameTitle.textContent = data.title;
+            document.title = `DARK CYBER — ${data.title}`; 
+            document.getElementById('periodInput').value = '';
+            document.getElementById('resultText').textContent = '—';
+            document.getElementById('resultText').style.color = '#fff';
+        }
+    }
+
+    function goToMainCard() {
+      gamePage.style.display = 'none';
+      mainCard.style.display = 'block';
+      document.title = 'DARK CYBER — Game Selector / PLATFORM'; 
+      updateMainCardForVip(); 
+      selectedGame = null; 
+      selectGameBtn.textContent = 'SELECT GAME 🎮'; 
+    }
+
+    // Access Control Logic
+    function checkVipAndProceed(callbackIfVip) {
+      if (isVipUnlocked) {
+        callbackIfVip();
+      } else {
+        document.querySelector('#paymentModal h3').innerHTML = 'PAYMENT SUCCESSFUL AFTER UNLOCK VIP';
+        paymentModal.style.display = 'flex';
+      }
+    }
+
+    // --- EVENT LISTENERS ---
+    selectGameBtn.addEventListener('click', ()=> {
+      checkVipAndProceed(() => {
+        gameModal.style.display = 'flex'; 
+      });
+    });
+
+    startNowBtn.addEventListener('click', ()=>{
+      checkVipAndProceed(() => {
+        if(!selectedGame || selectedGame.toUpperCase() === 'ALL PLATFORM'){
+          alert('Please select a game first.');
+          gameModal.style.display = 'flex'; 
+          return;
+        }
+        gamePageUpdate(selectedGame);
+        mainCard.style.display = 'none';
+        gamePage.style.display = 'block';
+        window.scrollTo({top:0,behavior:'smooth'});
+      });
+    });
+
+    // Close Modals on outside click
+    paymentModal.addEventListener('click', (e)=>{
+      if(e.target === paymentModal) paymentModal.style.display = 'none';
+    });
+    gameModal.addEventListener('click', (e) => {
+        if (e.target === gameModal) {
+            gameModal.style.display = 'none';
+        }
+    });
+    
+    payNowBtn.addEventListener('click', () => {
+        window.location.href = UPI_URL;
+    });
+
+    document.querySelectorAll('.game-option').forEach(opt=>{
+      opt.addEventListener('click', ()=>{
+        if (!isVipUnlocked) {
+          paymentModal.style.display = 'flex';
+          gameModal.style.display = 'none';
+          return;
+        }
+        
+        const name = opt.textContent.trim();
+        selectedGame = name;
+        selectGameBtn.textContent = '🎮 ' + name;
+        selectedGameText.innerHTML = `<b style="color:var(--neon1);">${name}</b><br><span style="font-size:13px;font-weight:600;">SELECTED PLATFORM</span>`;
+        
+        gameModal.style.display = 'none'; 
+      });
+    });
+    
+    // BACK AND LOGOUT LOGIC
+    backToMain.addEventListener('click', goToMainCard);
+    logoutBtn.addEventListener('click', ()=>{
+        if(confirm("Are you sure you want to log out? You will need a VIP code to access again.")){
+            handleVipExpiration('LOGOUT SUCCESSFUL 🚪', 'You have logged out. Enter a valid VIP code to continue.');
+            goToMainCard();
+        }
+    });
+    
+    // --- PREDICTION LOGIC (NEW FIXED LOGIC BASED ON LAST DIGIT AND FULL ANALYSIS) ---
+    
+    const PREDICTION_DATA = {
+        // Last Digit: { result: 'SMALL'/'BIG', color: color code, chance: '85%', numbers: '4, 2' }
+        // FINAL ANALYSIS (7 SMALL / 3 BIG bias for maximum match with user charts)
+        '0': { result: 'SMALL', color: 'var(--accent2)', chance: '85%', numbers: '4, 2' },
+        '1': { result: 'BIG', color: 'var(--green)', chance: '70%', numbers: '6, 8' },
+        '2': { result: 'SMALL', color: 'var(--accent2)', chance: '75%', numbers: '1, 3' },
+        '3': { result: 'BIG', color: 'var(--green)', chance: '65%', numbers: '9, 7' },
+        '4': { result: 'SMALL', color: 'var(--accent2)', chance: '80%', numbers: '0, 2' },
+        '5': { result: 'SMALL', color: 'var(--accent2)', chance: '90%', numbers: '3, 1' },
+        '6': { result: 'BIG', color: 'var(--green)', chance: '70%', numbers: '5, 7' },
+        '7': { result: 'SMALL', color: 'var(--accent2)', chance: '75%', numbers: '0, 4' },
+        '8': { result: 'BIG', color: 'var(--green)', chance: '65%', numbers: '9, 5' },
+        '9': { result: 'SMALL', color: 'var(--accent2)', chance: '85%', numbers: '1, 3' }
+    };
+
+    document.getElementById('registerBtn').addEventListener('click', ()=>{ 
+        alert('Register clicked (placeholder).'); 
+    });
+    document.getElementById('telegramBtn').addEventListener('click', ()=>{ 
+        alert('Open Telegram link (placeholder).'); 
+    });
+    
+    function revealResult(text, color) {
+      const resultTextElem = document.getElementById('resultText');
+      resultTextElem.style.transform = 'scale(0.85)';
+      resultTextElem.style.opacity = '0';
+      resultTextElem.textContent = '...';
+      
+      setTimeout(()=>{
+        resultTextElem.textContent = text;
+        resultTextElem.style.opacity = '1';
+        resultTextElem.style.transform = 'scale(1.05)';
+        resultTextElem.style.color = color; 
+        setTimeout(()=> resultTextElem.style.transform = 'scale(1)', 220);
+      }, 450);
+    }
+
+    document.getElementById('startPrediction').addEventListener('click', ()=>{
+      if(!isVipUnlocked){
+          handleVipExpiration('ACCESS DENIED 🛑', 'Your VIP access has been revoked or expired. Please unlock again.');
+          return;
+      }
+      
+      const periodValue = document.getElementById('periodInput').value.trim();
+      
+      if(!periodValue || periodValue.length !== 3){
+        alert('Please enter a valid 3-digit period number before starting.');
+        document.getElementById('periodInput').focus();
+        return;
+      }
+      
+      const lastDigit = periodValue.slice(-1); 
+
+      if (PREDICTION_DATA.hasOwnProperty(lastDigit)) {
+          
+          document.getElementById('resultText').textContent = 'Analysing...';
+          document.getElementById('resultText').style.color = '#fff';
+
+          const prediction = PREDICTION_DATA[lastDigit];
+          // Final Format: SMALL (85% Chance) / 4, 2
+          const resultText = `${prediction.result} (${prediction.chance} Chance) / ${prediction.numbers}`;
+          
+          setTimeout(() => {
+              revealResult(resultText, prediction.color);
+          }, 1000); 
+
+      } else {
+          alert('Error: Invalid period digit. Please enter 3 numbers only.');
+          document.getElementById('resultText').textContent = '—';
+      }
+    });
+
+    // --- END OF NEW PREDICTION LOGIC ---
+
+  </script>
+</body>
+</html>
