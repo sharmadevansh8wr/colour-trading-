@@ -1,1499 +1,222 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>DARK DEVIL BHAI- Ultra Pro Predictor</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Rajdhani:wght@500;700&display=swap" rel="stylesheet">
-    
-    <!-- Firebase SDK -->
-    <script src="https://www.gstatic.com/firebasejs/9.6.0/firebase-app-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.6.0/firebase-database-compat.js"></script>
-    
+    <title>PREDICTION BY DARK DEVIL BHAI😈</title>
+    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-database-compat.js"></script>
     <style>
-        :root {
-            --neon-purple: #bc13fe;
-            --neon-glow: #d670ff;
-            --dark-bg: #050505;
-            --card-bg: rgba(20, 0, 40, 0.7);
-            --green: #00ff00;
-            --red: #ff0000;
-            --gold: #ffcc00;
-            --blue: #00d4ff;
-            --orange: #ff9900;
-            --violet: #9d00ff;
-        }
+        @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&display=swap');
+        
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Orbitron', sans-serif; }
+        body { background: #000; color: white; min-height: 100vh; display: flex; flex-direction: column; align-items: center; }
 
-        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Rajdhani', sans-serif; user-select: none; }
-        body { background-color: var(--dark-bg); color: white; overflow-x: hidden; min-height: 100vh; }
-        #particles-js { position: fixed; width: 100%; height: 100%; z-index: -1; }
+        /* Header Bar (Blue) */
+        .header { width: 100%; padding: 20px; background: #3f51b5; font-size: 20px; font-weight: bold; text-align: left; box-shadow: 0 4px 10px rgba(0,0,0,0.5); }
 
-        #landing-page { display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 100vh; padding: 20px; }
-        .main-title { font-family: 'Orbitron', sans-serif; font-size: 2.5rem; color: var(--neon-purple); text-shadow: 0 0 15px var(--neon-purple); margin-bottom: 40px; text-align: center; }
-        .platform-scroller { display: flex; overflow-x: auto; gap: 20px; width: 100%; max-width: 1200px; padding: 40px 20px; scroll-behavior: smooth; scrollbar-width: none; }
-        .platform-scroller::-webkit-scrollbar { display: none; }
-        .platform-card { flex: 0 0 250px; height: 450px; background: var(--card-bg); border: 2px solid var(--neon-purple); border-radius: 25px; position: relative; overflow: hidden; transition: 0.3s; cursor: pointer; box-shadow: 0 0 15px rgba(188, 19, 254, 0.2); }
-        .platform-card:hover { transform: scale(1.05) translateY(-10px); box-shadow: 0 0 30px var(--neon-purple); }
-        .platform-card img { width: 100%; height: 100%; object-fit: cover; border-radius: 25px; }
-        .platform-label { position: absolute; bottom: 0; width: 100%; background: rgba(0,0,0,0.8); color: white; text-align: center; padding: 15px; font-weight: bold; font-size: 1.2rem; border-top: 1px solid var(--neon-purple); }
+        /* Main Glass Card */
+        .card { width: 92%; max-width: 400px; padding: 25px; border-radius: 25px; background: rgba(255, 255, 255, 0.05); border: 1px solid rgba(255, 255, 255, 0.1); text-align: center; margin-top: 40px; box-shadow: 0 10px 40px rgba(0,0,0,0.8); }
+        
+        #page2, #adminSection { display: none; }
 
-        #key-page { display: none; flex-direction: column; align-items: center; justify-content: center; min-height: 100vh; padding: 20px; }
-        .video-box { 
-            width: 90%; 
-            max-width: 400px; 
-            height: 200px; 
-            border: 2px solid var(--neon-purple); 
-            margin-bottom: 20px; 
-            border-radius: 10px; 
-            overflow: hidden; 
-            background: #000;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            box-shadow: 0 0 20px rgba(188, 19, 254, 0.3);
-        }
-        .video-box video {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-        }
-        .video-placeholder {
-            width: 100%;
-            height: 100%;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            background: linear-gradient(45deg, #140028, #2a0055);
-            color: var(--neon-purple);
-            font-family: 'Orbitron', sans-serif;
-            font-size: 1.2rem;
-            text-align: center;
-            padding: 20px;
-        }
-        .video-placeholder i {
-            font-size: 3rem;
-            margin-bottom: 15px;
-            color: var(--neon-purple);
-            text-shadow: 0 0 10px var(--neon-purple);
-        }
-        .key-container { 
-            background: var(--card-bg); 
-            padding: 30px; 
-            border-radius: 20px; 
-            border: 1px solid var(--neon-purple); 
-            text-align: center; 
-            width: 90%; 
-            max-width: 400px; 
-            backdrop-filter: blur(10px);
-            box-shadow: 0 0 25px rgba(188, 19, 254, 0.2);
-        }
-        .key-input { width: 100%; padding: 12px; background: rgba(255,255,255,0.1); border: 1px solid var(--neon-purple); color: white; border-radius: 5px; margin: 20px 0; text-align: center; font-size: 1.1rem; letter-spacing: 2px; }
-        .key-input:focus { outline: none; box-shadow: 0 0 10px var(--neon-purple); }
-        .btn-verify { 
-            background: linear-gradient(45deg, var(--neon-purple), #9d00ff); 
-            color: white; 
-            border: none; 
-            padding: 12px 30px; 
-            border-radius: 5px; 
-            cursor: pointer; 
-            font-weight: bold; 
-            width: 100%; 
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            transition: 0.3s;
-            box-shadow: 0 0 15px rgba(188, 19, 254, 0.3);
-        }
-        .btn-verify:hover { 
-            background: linear-gradient(45deg, #9d00ff, var(--neon-purple));
-            box-shadow: 0 0 20px var(--neon-purple);
-            transform: translateY(-2px);
-        }
+        /* Login Inputs */
+        .input-group { margin-bottom: 20px; border-bottom: 2px solid #333; }
+        .input-group input, .input-group select { width: 100%; padding: 12px; background: transparent; border: none; outline: none; color: white; text-align: center; font-size: 13px; font-family: 'Orbitron'; }
 
-        #prediction-page { display: none; min-height: 100vh; padding: 20px; position: relative; }
-        .app-container { max-width: 450px; margin: 0 auto; border: 3px solid var(--neon-purple); border-radius: 30px; padding: 20px; background: rgba(0, 0, 0, 0.95); min-height: 90vh; position: relative; z-index: 1; box-shadow: 0 0 20px var(--neon-purple); }
-        .app-header { text-align: center; color: var(--neon-purple); font-family: 'Orbitron', sans-serif; font-size: 1.8rem; margin-bottom: 20px; text-shadow: 0 0 10px var(--neon-purple); }
-        .status-bar { display: flex; justify-content: space-between; margin-bottom: 20px; }
-        .status-box { flex: 1; border: 1px solid var(--neon-purple); padding: 10px; text-align: center; margin: 5px; border-radius: 10px; font-weight: bold; font-size: 0.8rem; }
-        .server-select { border: 1px solid var(--neon-purple); padding: 15px; border-radius: 10px; text-align: center; margin-bottom: 20px; }
-        .period-display { text-align: center; font-size: 1.1rem; margin: 15px 0; letter-spacing: 2px; }
-        .prediction-box { border: 2px solid var(--neon-purple); min-height: 250px; border-radius: 20px; display: flex; flex-direction: column; align-items: center; justify-content: center; margin-bottom: 20px; position: relative; background: rgba(255,255,255,0.05); padding: 20px; }
-        .prediction-text { font-size: 4rem; font-weight: 900; font-family: 'Orbitron', sans-serif; text-transform: uppercase; }
-        .history-panel { margin-top: 20px; max-height: 300px; overflow-y: auto; border-top: 1px solid var(--neon-purple); padding-top: 10px; }
-        .history-item { display: flex; justify-content: space-between; padding: 12px; border-bottom: 1px solid rgba(188, 19, 254, 0.3); font-size: 0.95rem; }
+        /* Prediction UI (Screenshot wala look) */
+        .system-status { color: #ff0055; font-size: 15px; font-weight: 900; letter-spacing: 2px; }
+        .user-meta { color: #888; font-size: 10px; margin: 8px 0 25px 0; letter-spacing: 1px; }
         
-        /* Dynamic Colors */
-        .win { color: var(--green); text-shadow: 0 0 5px var(--green); }
-        .loss { color: var(--red); text-shadow: 0 0 5px var(--red); }
-        .pending { color: var(--gold); }
-        .big { color: var(--gold); text-shadow: 0 0 10px var(--gold); }
-        .small { color: var(--blue); text-shadow: 0 0 10px var(--blue); }
-        .red { color: #ff3e3e; }
-        .green { color: #44ff44; }
-        .violet { color: var(--violet); }
+        /* Neon Green Box */
+        .prediction-box { 
+            width: 100%; padding: 40px 10px; border-radius: 20px; 
+            border: 2px solid #00ff99; box-shadow: inset 0 0 15px #00ff99, 0 0 20px #00ff99;
+            margin-bottom: 30px; display: flex; justify-content: center; align-items: center;
+        }
+        .pred-text { font-size: 34px; font-weight: 900; color: #00ff99; letter-spacing: 5px; text-transform: uppercase; }
 
-        .confidence-meter { width: 100%; height: 10px; background: rgba(255,255,255,0.1); border-radius: 5px; margin-top: 15px; overflow: hidden; }
-        .confidence-fill { height: 100%; border-radius: 5px; transition: width 1s ease-in-out; }
-        .pattern-display { display: grid; grid-template-columns: repeat(5, 1fr); gap: 5px; margin: 10px 0; padding: 10px; border: 1px solid rgba(188, 19, 254, 0.3); border-radius: 10px; background: rgba(0,0,0,0.5); }
-        .pattern-item { text-align: center; padding: 5px; border-radius: 5px; font-size: 0.8rem; font-weight: bold; border: 1px solid rgba(255,255,255,0.1); }
+        /* History (Screenshot Look) */
+        .history-card { background: rgba(0,0,0,0.7); border-radius: 15px; padding: 15px; text-align: left; border: 1px solid #1a1a1a; }
+        .history-header { color: #ff0055; font-size: 11px; margin-bottom: 12px; font-weight: bold; }
+        .history-labels { display: grid; grid-template-columns: 1.5fr 1fr 1fr; font-size: 9px; color: #fff; margin-bottom: 10px; text-transform: uppercase; }
+        .history-list { max-height: 140px; overflow-y: auto; font-size: 11px; }
+        .history-item { display: grid; grid-template-columns: 1.5fr 1fr 1fr; padding: 10px 0; border-top: 1px solid #111; color: #ccc; }
+
+        /* Buttons */
+        .btn-main { width: 100%; padding: 15px; background: #fff; color: #000; border: none; font-weight: 900; cursor: pointer; border-radius: 10px; font-size: 12px; }
+        .terminate-btn { width: 100%; padding: 15px; background: transparent; border: 1px solid #222; color: #444; margin-top: 25px; border-radius: 12px; font-size: 10px; letter-spacing: 2px; }
+
+        /* Admin Controls */
+        .admin-box { background: #080808; padding: 25px; border-radius: 20px; border: 1px solid #ff0055; width: 92%; max-width: 450px; margin-top: 20px; }
+        .adm-input { width: 100%; padding: 12px; background: #000; border: 1px solid #333; color: #fff; margin-bottom: 12px; border-radius: 6px; text-align: center; font-family: 'Orbitron'; }
         
-        /* New Analysis Panel */
-        .analysis-panel { margin: 15px 0; padding: 15px; border: 1px solid rgba(188, 19, 254, 0.5); border-radius: 15px; background: rgba(0, 0, 30, 0.3); }
-        .analysis-title { text-align: center; color: var(--blue); margin-bottom: 10px; font-size: 0.9rem; }
-        .analysis-data { display: flex; flex-wrap: wrap; justify-content: space-between; }
-        .analysis-item { width: 48%; margin: 5px 0; font-size: 0.8rem; }
-        .analysis-value { color: var(--green); font-weight: bold; }
-        
-        /* Algorithm Detector */
-        .algorithm-indicator { text-align: center; padding: 8px; border-radius: 10px; margin: 10px 0; background: rgba(0, 40, 60, 0.3); border: 1px solid var(--blue); font-size: 0.85rem; }
-        .algo-detected { color: var(--green); animation: pulse 2s infinite; }
-        .algo-analyzing { color: var(--gold); animation: pulse 1s infinite; }
-        
-        @keyframes pulse {
-            0% { opacity: 0.6; }
-            50% { opacity: 1; }
-            100% { opacity: 0.6; }
-        }
-        
-        /* Loading Animation */
-        .loading-dots:after { content: '.'; animation: dots 1.5s steps(5, end) infinite; }
-        @keyframes dots {
-            0%, 20% { content: '.'; }
-            40% { content: '..'; }
-            60% { content: '...'; }
-            80%, 100% { content: ''; }
-        }
-        
-        /* Advanced Pattern Display */
-        .pattern-analysis { margin: 15px 0; }
-        .pattern-row { display: flex; justify-content: space-between; margin: 5px 0; padding: 5px; border-bottom: 1px dashed rgba(255,255,255,0.1); }
-        .pattern-type { color: var(--neon-purple); }
-        .pattern-result { font-weight: bold; }
-        .pattern-count { color: var(--orange); }
-        
-        /* Hidden Analysis Area */
-        .hidden-analysis { max-height: 0; overflow: hidden; transition: max-height 0.5s ease; background: rgba(0, 0, 20, 0.5); border-radius: 10px; margin: 10px 0; }
-        .hidden-analysis.active { max-height: 300px; padding: 10px; }
-        .toggle-analysis { text-align: center; color: var(--neon-purple); cursor: pointer; font-size: 0.8rem; margin: 5px 0; }
-        
-        /* Reverse Indicator */
-        .reverse-indicator {
-            position: absolute;
-            top: 10px;
-            right: 10px;
-            font-size: 0.7rem;
-            color: var(--orange);
-            background: rgba(0,0,0,0.5);
-            padding: 2px 5px;
-            border-radius: 3px;
-            opacity: 0.3;
-        }
-        
-        /* Back Button */
-        .back-button {
-            position: absolute;
-            top: 20px;
-            left: 20px;
-            color: var(--neon-purple);
-            cursor: pointer;
-            font-size: 1.5rem;
-            z-index: 10;
-        }
-        
-        /* Video Controls */
-        .video-controls {
-            position: absolute;
-            bottom: 10px;
-            right: 10px;
-            display: flex;
-            gap: 5px;
-            z-index: 5;
-        }
-        .video-controls button {
-            background: rgba(0,0,0,0.7);
-            color: white;
-            border: 1px solid var(--neon-purple);
-            border-radius: 3px;
-            padding: 3px 8px;
-            cursor: pointer;
-            font-size: 0.7rem;
-        }
-        
-        /* Admin Panel Styles */
-        #admin-btn {
-            position: fixed;
-            bottom: 15px;
-            right: 15px;
-            width: 1px;
-            height: 1px;
-            opacity: 0;
-            cursor: pointer;
-            z-index: 9999;
-        }
-        
-        #admin-panel {
-            display: none;
-            position: fixed;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            background: rgba(5, 5, 15, 0.95);
-            border: 3px solid var(--neon-purple);
-            border-radius: 20px;
-            padding: 30px;
-            width: 90%;
-            max-width: 500px;
-            z-index: 10000;
-            backdrop-filter: blur(10px);
-            box-shadow: 0 0 40px rgba(188, 19, 254, 0.5);
-        }
-        
-        .admin-header {
-            text-align: center;
-            color: var(--neon-purple);
-            font-family: 'Orbitron', sans-serif;
-            margin-bottom: 25px;
-            font-size: 1.5rem;
-        }
-        
-        .admin-input {
-            width: 100%;
-            padding: 12px;
-            margin: 10px 0;
-            background: rgba(255,255,255,0.1);
-            border: 1px solid var(--neon-purple);
-            color: white;
-            border-radius: 5px;
-            font-size: 1rem;
-        }
-        
-        .admin-select {
-            width: 100%;
-            padding: 12px;
-            margin: 10px 0;
-            background: rgba(255,255,255,0.1);
-            border: 1px solid var(--neon-purple);
-            color: white;
-            border-radius: 5px;
-            font-size: 1rem;
-        }
-        
-        .admin-btn {
-            background: linear-gradient(45deg, var(--neon-purple), #9d00ff);
-            color: white;
-            border: none;
-            padding: 12px 25px;
-            border-radius: 5px;
-            cursor: pointer;
-            font-weight: bold;
-            width: 100%;
-            margin: 10px 0;
-            transition: 0.3s;
-        }
-        
-        .admin-btn:hover {
-            background: linear-gradient(45deg, #9d00ff, var(--neon-purple));
-            box-shadow: 0 0 20px var(--neon-purple);
-        }
-        
-        #generated-key {
-            margin: 20px 0;
-            padding: 15px;
-            background: rgba(0,0,0,0.5);
-            border: 1px solid var(--green);
-            border-radius: 5px;
-            text-align: center;
-            font-family: monospace;
-            font-size: 1.2rem;
-            color: var(--green);
-            word-break: break-all;
-            display: none;
-        }
-        
-        .key-list {
-            max-height: 200px;
-            overflow-y: auto;
-            margin: 15px 0;
-            padding: 10px;
-            background: rgba(0,0,0,0.3);
-            border-radius: 5px;
-        }
-        
-        .key-item {
-            padding: 8px;
-            margin: 5px 0;
-            background: rgba(255,255,255,0.05);
-            border-radius: 5px;
-            font-size: 0.9rem;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-        
-        .key-expired {
-            color: var(--red);
-        }
-        
-        .key-active {
-            color: var(--green);
-        }
-        
-        /* Countdown Timer */
-        #key-countdown {
-            position: absolute;
-            top: 10px;
-            right: 100px;
-            font-size: 0.8rem;
-            color: var(--orange);
-            background: rgba(0,0,0,0.5);
-            padding: 5px 10px;
-            border-radius: 5px;
-            display: none;
-        }
-        
-        /* Overlay */
-        #overlay {
-            display: none;
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0,0,0,0.8);
-            z-index: 9999;
-        }
+        .admin-trigger { position: fixed; bottom: 10px; right: 10px; font-size: 8px; color: #111; cursor: pointer; }
     </style>
 </head>
 <body>
 
-    <div id="particles-js"></div>
-    <div id="overlay"></div>
-    
-    <!-- Admin Button (Hidden) -->
-    <button id="admin-btn"></button>
-    
-    <!-- Admin Panel -->
-    <div id="admin-panel">
-        <div class="admin-header">ADMIN KEY GENERATOR</div>
-        <input type="password" id="admin-pass" class="admin-input" placeholder="Enter Admin Password">
-        <div id="admin-controls" style="display:none;">
-            <select id="time-unit" class="admin-select">
-                <option value="minutes">Minutes</option>
-                <option value="hours">Hours</option>
-                <option value="days">Days</option>
-                <option value="months">Months</option>
+    <div class="header">DARK DEVIL BHAI 😈</div>
+
+    <div class="card" id="page1">
+        <h2 style="color:#ff0055; margin-bottom: 25px;">DARK DEVIL BHAI  LOGIN</h2>
+        <div class="input-group"><input type="number" id="uidInput" placeholder="6-DIGIT UID"></div>
+        <div class="input-group"><input type="password" id="passInput" placeholder="ACCESS KEY (PASSWORD)"></div>
+        <div class="input-group">
+            <select id="depositAmt">
+                <option value="" disabled selected>SELECT DEPOSIT</option>
+                <option value="₹100">₹100</option>
+                <option value="₹200">₹200</option>
+                <option value="₹500">₹500</option>
+                <option value="₹1000">₹1000</option>
             </select>
-            <input type="number" id="time-value" class="admin-input" placeholder="Time Value (e.g., 24)" min="1" max="365">
-            <input type="number" id="device-limit" class="admin-input" placeholder="Device Limit (e.g., 1)" min="1" max="10">
-            <button class="admin-btn" onclick="generateKey()">GENERATE KEY</button>
-            <div id="generated-key"></div>
-            
-            <div style="margin-top: 20px; border-top: 1px solid var(--neon-purple); padding-top: 15px;">
-                <div style="color: var(--blue); margin-bottom: 10px;">ACTIVE KEYS:</div>
-                <div id="active-keys" class="key-list"></div>
-            </div>
-            
-            <button class="admin-btn" onclick="closeAdminPanel()" style="background: var(--red); margin-top: 20px;">CLOSE PANEL</button>
         </div>
+        <button class="btn-main" onclick="handleLogin()">INITIALIZE SYSTEM</button>
     </div>
 
-    <section id="landing-page">
-        <h1 class="main-title">CHOOSE PLATFORM</h1>
-        <div class="platform-scroller">
-            <div class="platform-card" onclick="openKeyPage('TASHAN')">
-                <img src="https://i.supaimg.com/e91f48b1-b7d1-4c34-b3ee-e4e262e207b9.jpg" alt="TASHAN">
-                <div class="platform-label">TASHAN</div>
-            </div>
-            <div class="platform-card" onclick="openKeyPage('OK WIN')">
-                <img src="https://i.supaimg.com/6c1975e4-fe2c-4d4c-8ace-20b7522fa096.jpg" alt="OK WIN">
-                <div class="platform-label">OK WIN</div>
-            </div>
-            <div class="platform-card" onclick="openKeyPage('BIG MUMBAI')">
-                <img src="https://i.supaimg.com/cd54a700-147c-4f14-aa76-0c6c125322ea.jpg" alt="BIG MUMBAI">
-                <div class="platform-label">BIG MUMBAI</div>
-            </div>
-            <div class="platform-card" onclick="openKeyPage('JALWA')">
-                <img src="https://i.supaimg.com/f52fd3c8-bac8-441a-b93a-8f145920a5c5.jpg" alt="JALWA">
-                <div class="platform-label">JALWA</div>
-            </div>
-            <div class="platform-card" onclick="openKeyPage('82 LOTTERY')">
-                <img src="https://i.supaimg.com/df15f456-3503-4d6c-aee5-1b6d29af8ed6.jpg" alt="82 LOTTERY">
-                <div class="platform-label">82 LOTTERY</div>
-            </div>
-            <div class="platform-card" onclick="openKeyPage(' BHARAT CLUB')">
-                <img src="https://i.supaimg.com/af11fe61-ef32-4394-9ab1-2f4ac8b038d7.jpg" alt="BHARAT CLUB">
-                <div class="platform-label">BHARAT CLUB</div>
-            </div>
-            <div class="platform-card" onclick="openKeyPage('GOA GAME')">
-                <img src="https://i.supaimg.com/1b647672-14dc-482e-a440-0408d298c578.jpg" alt="GOA GAME">
-                <div class="platform-label">GOA GAME</div>
-            </div>
-            <div class="platform-card" onclick="openKeyPage('91 CLUB')">
-                <img src="https://i.supaimg.com/06f1308d-bc0a-4d42-b54f-4544aed93bd4.jpg" alt="91 CLUB">
-                <div class="platform-label">91 CLUB</div>
-            </div>
-        </div>
+    <div class="card" id="page2">
+        <div class="system-status">SYSTEM ACTIVE</div>
+        <div class="user-meta" id="uMeta">UID: #123456 | DEPOSIT: ₹1000</div>
         
-        <!-- Countdown Timer -->
-        <div id="key-countdown"></div>
-    </section>
-
-    <section id="key-page">
-        <div class="back-button" onclick="goBack()">
-            <i class="fas fa-arrow-left"></i>
+        <div class="prediction-box" id="pBox">
+            <div class="pred-text" id="pText">ANALYZING</div>
         </div>
-        <div class="video-box">
-            <video id="security-video" autoplay loop muted>
-                <source src="https://drive.google.com/file/d/1RKGSBepSeygElpAFTgaHG1kKBnX0rvY8/view?usp=drivesdk" type="video/mp4">
-                Your browser does not support the video tag.
-            </video>
-            <div class="video-controls">
-                <button onclick="toggleMute()" id="mute-btn">
-                    <i class="fas fa-volume-mute"></i>
-                </button>
-                <button onclick="replayVideo()">
-                    <i class="fas fa-redo"></i>
-                </button>
-            </div>
-        </div>
-        <div class="key-container">
-            <h2 style="color:var(--neon-purple); margin-bottom: 10px;">SECURITY CHECK</h2>
-            <p style="font-size: 0.8rem; color: #aaa;">Enter your private access key</p>
-            <input type="password" id="key-input" class="key-input" placeholder="ENTER ACCESS KEY">
-            <button class="btn-verify" onclick="verifyKey()">VERIFY ACCESS</button>
-            <p id="error-msg" style="color:red; margin-top:10px; display:none;">INVALID KEY!</p>
-            <p style="font-size: 0.7rem; color: #666; margin-top: 15px;">
-                <i class="fas fa-shield-alt"></i> Secured by Mickey X Web Encryption
-            </p>
-            <p id="key-expiry-info" style="font-size: 0.7rem; color: var(--orange); margin-top: 10px; display: none;"></p>
-        </div>
-    </section>
 
-    <section id="prediction-page">
-        <div class="app-container">
-            <div class="back-button" onclick="goToLanding()">
-                <i class="fas fa-home"></i>
+        <div class="history-card">
+            <div class="history-header">RESULT HISTORY</div>
+            <div class="history-labels">
+                <span>PREDICTION NUMBER</span>
+                <span>big./ small</span>
+                <span>winn / loss</span>
             </div>
-            <div class="reverse-indicator">REVERSE MODE</div>
-            
-            <h1 class="app-header">DARK DEVIL BHAI </h1>
-            <div class="status-bar">
-                <div class="status-box">SERVER: AKTIV</div>
-                <div class="status-box" id="analysis-status" style="color:var(--gold)">READY</div>
-                <div class="status-box" id="confidence-display">CONF: 0%</div>
-            </div>
-            <div class="server-select">
-                <span style="color:var(--neon-purple); font-size: 0.8rem;">SELECTED PLATFORM</span><br>
-                <span id="selected-platform" style="font-weight:bold; letter-spacing:2px; color: #fff;">...</span>
-            </div>
-            <div class="period-display">PERIOD: <span id="current-period" style="font-weight:bold; color:var(--neon-purple)">LOADING...</span></div>
-            
-            <!-- Algorithm Detector -->
-            <div id="algorithm-detector" class="algorithm-indicator algo-analyzing">
-                <i class="fas fa-cogs"></i> ALGORITHM: <span id="algo-status">ANALYZING PATTERNS</span>
-            </div>
-            
-            <!-- Hidden Analysis Area -->
-            <div class="toggle-analysis" onclick="toggleAnalysis()">
-                <i class="fas fa-eye"></i> SHOW/HIDE REAL ANALYSIS
-            </div>
-            <div id="hidden-analysis" class="hidden-analysis">
-                <div class="analysis-title">HIDDEN REAL ANALYSIS</div>
-                <div id="detailed-analysis"></div>
-                <div class="analysis-title" style="margin-top:10px; color:var(--orange)">ACTUAL PREDICTION (HIDDEN)</div>
-                <div id="real-prediction-info" style="text-align:center; font-size:1.2rem; color:var(--green); margin:5px 0;"></div>
-                <div id="opposite-note" style="font-size:0.7rem; color:rgba(255,255,255,0.5); text-align:center; margin-top:5px;">
-                    <i class="fas fa-info-circle"></i> Display shows opposite for strategy
-                </div>
-            </div>
-            
-            <!-- Pattern Analysis -->
-            <div class="pattern-analysis">
-                <div class="pattern-row">
-                    <span class="pattern-type">BIG/SMALL Pattern:</span>
-                    <span id="size-pattern" class="pattern-result">Analyzing...</span>
-                    <span id="size-count" class="pattern-count"></span>
-                </div>
-                <div class="pattern-row">
-                    <span class="pattern-type">RED/GREEN Pattern:</span>
-                    <span id="color-pattern" class="pattern-result">Analyzing...</span>
-                    <span id="color-count" class="pattern-count"></span>
-                </div>
-                <div class="pattern-row">
-                    <span class="pattern-type">Algorithm Detected:</span>
-                    <span id="algo-pattern" class="pattern-result" style="color:var(--gold)">SCANNING</span>
-                </div>
-            </div>
-            
-            <div class="prediction-box">
-                <div id="prediction-text" class="prediction-text">--</div>
-                <div class="confidence-meter">
-                    <div id="confidence-fill" class="confidence-fill" style="width:0%; background:var(--neon-purple);"></div>
-                </div>
-                <div id="prediction-type" style="margin-top:10px; font-size:0.9rem; color:var(--blue)">Waiting for analysis...</div>
-            </div>
-            
-            <div style="text-align:center; margin-bottom:10px; color:var(--neon-purple); font-weight:bold;">
-                STREAK: <span id="streak-info">0 WIN / 0 LOSS</span> | 
-                ACCURACY: <span id="accuracy-rate">0%</span>
-            </div>
-            
-            <!-- Analysis Panel -->
-            <div class="analysis-panel">
-                <div class="analysis-title">REAL-TIME ANALYSIS (DISPLAY SHOWS OPPOSITE)</div>
-                <div class="analysis-data">
-                    <div class="analysis-item">BIG %: <span id="big-percent" class="analysis-value">0</span></div>
-                    <div class="analysis-item">SMALL %: <span id="small-percent" class="analysis-value">0</span></div>
-                    <div class="analysis-item">RED %: <span id="red-percent" class="analysis-value">0</span></div>
-                    <div class="analysis-item">GREEN %: <span id="green-percent" class="analysis-value">0</span></div>
-                    <div class="analysis-item">Current Streak: <span id="current-streak" class="analysis-value">0</span></div>
-                    <div class="analysis-item">Pattern Length: <span id="pattern-length" class="analysis-value">0</span></div>
-                </div>
-            </div>
-            
-            <div id="pattern-display-container">
-                <div style="text-align:center; margin:10px 0; color:var(--orange); font-size:0.8rem; font-weight:bold;">MARKET TREND (LAST 10)</div>
-                <div class="pattern-display" id="pattern-display"></div>
-            </div>
-
-            <div class="history-panel" id="history-list"></div>
-            
-            <div style="text-align:center; margin-top:20px; font-size:0.7rem; color:#666;">
-                <i class="fas fa-copyright"></i> Mickey X Web 2024 | Ultra Pro Predictor
-            </div>
+            <div id="userHistoryList" class="history-list"></div>
         </div>
-    </section>
 
-    <script src="https://cdn.jsdelivr.net/particles.js/2.0.0/particles.min.js"></script>
+        <button class="terminate-btn" onclick="location.reload()">TERMINATE</button>
+    </div>
+
+    <div id="adminSection" class="admin-box">
+        <h3 style="color:#ff0055; text-align:center; margin-bottom:15px;">MASTER ADMIN</h3>
+        
+        <input type="number" id="admPeriod" class="adm-input" placeholder="PERIOD NO (e.g. 251)">
+        <select id="admChoice" class="adm-input">
+            <option value="BIG">BIG</option>
+            <option value="SMALL">SMALL</option>
+        </select>
+        <button class="btn-main" style="background:#ff0055; color:#fff;" onclick="sendPred()">SEND PREDICTION</button>
+
+        <div class="history-card" style="margin-top:20px;">
+            <p style="font-size:10px; color:#ff0055; margin-bottom:10px;">MANAGE LIVE RESULTS</p>
+            <div id="adminHistoryList" class="history-list"></div>
+        </div>
+        <button class="terminate-btn" onclick="location.reload()" style="color:#fff;">EXIT ADMIN</button>
+    </div>
+
+    <div class="admin-trigger" onclick="adminAccess()">[ ADMIN ]</div>
+
     <script>
-        // Initialize Firebase
+        // Firebase Config (Keep your same config)
         const firebaseConfig = {
-            apiKey: "AIzaSyCShaI7FfDCvZ9t21RdBk7ATjk5PQUAeQI",
-            authDomain: "wingo-predictor-hub.firebaseapp.com",
-            databaseURL: "https://wingo-predictor-hub-default-rtdb.asia-southeast1.firebasedatabase.app",
-            projectId: "wingo-predictor-hub",
-            storageBucket: "wingo-predictor-hub.firebasestorage.app",
-            messagingSenderId: "510934626240",
-            appId: "1:510934626240:web:8df9c4b4a78964f15d2225",
-            measurementId: "G-TTM7WXC4DW"
+            apiKey: "AIzaSyArxI2cJsMAoBkmu6VVfAi2NqXIntGsiv0",
+            authDomain: "mr-hacker-302-f0203.firebaseapp.com",
+            databaseURL: "https://mr-hacker-302-f0203-default-rtdb.firebaseio.com",
+            projectId: "mr-hacker-302-f0203",
+            storageBucket: "mr-hacker-302-f0203.firebasestorage.app",
+            messagingSenderId: "134484300463",
+            appId: "1:134484300463:web:919dd27eb5ab6eb1b7fa5a",
+            measurementId: "G-1W1F5DPDQZ"
         };
-        
         firebase.initializeApp(firebaseConfig);
-        const database = firebase.database();
+        const db = firebase.database();
 
-        particlesJS("particles-js", {
-            particles: { 
-                number: { value: 60, density: { enable: true, value_area: 800 } }, 
-                color: { value: "#bc13fe" }, 
-                shape: { type: "circle" }, 
-                opacity: { value: 0.3 }, 
-                size: { value: 2 }, 
-                line_linked: { enable: true, distance: 150, color: "#bc13fe", opacity: 0.2, width: 1 }, 
-                move: { enable: true, speed: 2, direction: "none", out_mode: "bounce" } 
-            }
-        });
+        // 1. LOGIN
+        function handleLogin() {
+            const uid = document.getElementById('uidInput').value;
+            const pass = document.getElementById('passInput').value;
+            const amt = document.getElementById('depositAmt').value;
 
-        const API_URL = "https://draw.ar-lottery01.com/WinGo/WinGo_1M/GetHistoryIssuePage.json";
-        let lastPeriod = "";
-        let historyData = [];
-        let winStreak = 0;
-        let lossStreak = 0;
-        let totalPredictions = 0;
-        let correctPredictions = 0;
-        let algorithmPatterns = [];
-        let currentAlgorithm = null;
-        let last10Results = [];
-        let isAnalyzing = false;
-        let analysisComplete = false;
-        let realPrediction = null;
-        let isVideoMuted = true;
-        let videoPlayer = null;
-        let currentKeyData = null;
-        let countdownInterval = null;
-        let currentDeviceId = null;
-
-        // Generate unique device ID
-        function generateDeviceId() {
-            let deviceId = localStorage.getItem('mickey_device_id');
-            if (!deviceId) {
-                deviceId = 'device_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9);
-                localStorage.setItem('mickey_device_id', deviceId);
-            }
-            return deviceId;
-        }
-
-        // Initialize device ID
-        currentDeviceId = generateDeviceId();
-
-        // Admin panel functionality
-        document.getElementById('admin-btn').addEventListener('click', function(e) {
-            const rect = this.getBoundingClientRect();
-            if (rect.width === 1 && rect.height === 1) {
-                const password = prompt("Enter Admin Password:");
-                if (password === "456") {
-                    document.getElementById('overlay').style.display = 'block';
-                    document.getElementById('admin-panel').style.display = 'block';
-                    document.getElementById('admin-controls').style.display = 'block';
-                    loadActiveKeys();
-                }
-            }
-        });
-
-        function closeAdminPanel() {
-            document.getElementById('overlay').style.display = 'none';
-            document.getElementById('admin-panel').style.display = 'none';
-            document.getElementById('admin-pass').value = '';
-        }
-
-        function generateKey() {
-            const timeUnit = document.getElementById('time-unit').value;
-            const timeValue = parseInt(document.getElementById('time-value').value);
-            const deviceLimit = parseInt(document.getElementById('device-limit').value);
-            
-            if (!timeValue || timeValue < 1 || !deviceLimit || deviceLimit < 1) {
-                alert('Please enter valid values');
-                return;
-            }
-            
-            // Generate random key
-            const key = 'MICK' + Date.now().toString(36).toUpperCase() + Math.random().toString(36).substr(2, 6).toUpperCase();
-            
-            // Calculate expiration time
-            let expiresAt = Date.now();
-            switch(timeUnit) {
-                case 'minutes':
-                    expiresAt += timeValue * 60 * 1000;
-                    break;
-                case 'hours':
-                    expiresAt += timeValue * 60 * 60 * 1000;
-                    break;
-                case 'days':
-                    expiresAt += timeValue * 24 * 60 * 60 * 1000;
-                    break;
-                case 'months':
-                    expiresAt += timeValue * 30 * 24 * 60 * 60 * 1000;
-                    break;
-            }
-            
-            // Save to Firebase
-            const keyData = {
-                key: key,
-                createdAt: Date.now(),
-                expiresAt: expiresAt,
-                deviceLimit: deviceLimit,
-                devices: {},
-                isActive: true
-            };
-            
-            database.ref('keys/' + key).set(keyData)
-                .then(() => {
-                    document.getElementById('generated-key').innerHTML = 
-                        `<strong>Generated Key:</strong><br>${key}<br><br>
-                         <small>Expires in: ${timeValue} ${timeUnit}<br>
-                         Device Limit: ${deviceLimit}</small>`;
-                    document.getElementById('generated-key').style.display = 'block';
-                    loadActiveKeys();
-                })
-                .catch(error => {
-                    console.error('Error saving key:', error);
-                    alert('Error generating key');
-                });
-        }
-
-        function loadActiveKeys() {
-            database.ref('keys').once('value')
-                .then(snapshot => {
-                    const keys = snapshot.val();
-                    const keysList = document.getElementById('active-keys');
-                    keysList.innerHTML = '';
-                    
-                    if (!keys) {
-                        keysList.innerHTML = '<div style="color: #aaa; text-align: center;">No active keys</div>';
-                        return;
-                    }
-                    
-                    Object.keys(keys).forEach(keyId => {
-                        const key = keys[keyId];
-                        const isExpired = Date.now() > key.expiresAt;
-                        const deviceCount = key.devices ? Object.keys(key.devices).length : 0;
-                        
-                        const keyDiv = document.createElement('div');
-                        keyDiv.className = 'key-item ' + (isExpired ? 'key-expired' : 'key-active');
-                        keyDiv.innerHTML = `
-                            <div>
-                                <strong>${key.key.substring(0, 10)}...</strong><br>
-                                <small>Devices: ${deviceCount}/${key.deviceLimit}</small>
-                            </div>
-                            <div style="text-align: right;">
-                                ${isExpired ? 'EXPIRED' : 'ACTIVE'}<br>
-                                <small>${formatTimeRemaining(key.expiresAt - Date.now())}</small>
-                            </div>
-                        `;
-                        keysList.appendChild(keyDiv);
-                    });
-                });
-        }
-
-        function formatTimeRemaining(ms) {
-            if (ms <= 0) return 'Expired';
-            
-            const days = Math.floor(ms / (1000 * 60 * 60 * 24));
-            const hours = Math.floor((ms % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-            const minutes = Math.floor((ms % (1000 * 60 * 60)) / (1000 * 60));
-            
-            if (days > 0) return `${days}d ${hours}h`;
-            if (hours > 0) return `${hours}h ${minutes}m`;
-            return `${minutes}m`;
-        }
-
-        function updateCountdown() {
-            if (!currentKeyData) return;
-            
-            const remaining = currentKeyData.expiresAt - Date.now();
-            if (remaining <= 0) {
-                document.getElementById('key-countdown').innerText = 'KEY EXPIRED';
-                document.getElementById('key-countdown').style.color = 'var(--red)';
-                
-                // Auto-logout when key expires
-                setTimeout(() => {
-                    alert('Your key has expired! Please purchase a new key.');
-                    localStorage.removeItem('mickey_active_key');
-                    localStorage.removeItem('mickey_key_data');
-                    document.getElementById('prediction-page').style.display = 'none';
-                    document.getElementById('landing-page').style.display = 'flex';
-                }, 1000);
-                return;
-            }
-            
-            document.getElementById('key-countdown').innerText = `KEY: ${formatTimeRemaining(remaining)}`;
-            document.getElementById('key-countdown').style.color = remaining < 3600000 ? 'var(--orange)' : 'var(--green)';
-        }
-
-        function startCountdown() {
-            if (countdownInterval) clearInterval(countdownInterval);
-            countdownInterval = setInterval(updateCountdown, 1000);
-            updateCountdown();
-            document.getElementById('key-countdown').style.display = 'block';
-        }
-
-        function stopCountdown() {
-            if (countdownInterval) clearInterval(countdownInterval);
-            document.getElementById('key-countdown').style.display = 'none';
-        }
-
-        // Check for auto-login on page load
-        window.onload = function() {
-            const savedKey = localStorage.getItem('mickey_active_key');
-            const savedKeyData = localStorage.getItem('mickey_key_data');
-            
-            if (savedKey && savedKeyData) {
-                const keyData = JSON.parse(savedKeyData);
-                
-                // Check if key is still valid
-                if (Date.now() < keyData.expiresAt) {
-                    // Verify with Firebase
-                    database.ref('keys/' + savedKey).once('value')
-                        .then(snapshot => {
-                            const firebaseKeyData = snapshot.val();
-                            if (firebaseKeyData && 
-                                firebaseKeyData.isActive && 
-                                firebaseKeyData.devices && 
-                                firebaseKeyData.devices[currentDeviceId]) {
-                                
-                                currentKeyData = firebaseKeyData;
-                                startCountdown();
-                                document.getElementById('landing-page').style.display = 'none';
-                                document.getElementById('prediction-page').style.display = 'block';
-                                startPredictor();
-                            }
-                        });
-                } else {
-                    localStorage.removeItem('mickey_active_key');
-                    localStorage.removeItem('mickey_key_data');
-                }
-            }
-        };
-
-        // Modified verifyKey function
-        async function verifyKey() {
-            const keyInput = document.getElementById('key-input').value.trim().toUpperCase();
-            const errorMsg = document.getElementById('error-msg');
-            
-            if (!keyInput) {
-                errorMsg.innerText = 'Please enter a key';
-                errorMsg.style.display = 'block';
-                return;
-            }
-            
-            // Check Firebase for the key
-            try {
-                const snapshot = await database.ref('keys/' + keyInput).once('value');
-                const keyData = snapshot.val();
-                
-                if (!keyData || !keyData.isActive) {
-                    errorMsg.innerText = 'INVALID OR INACTIVE KEY!';
-                    errorMsg.style.display = 'block';
-                    shakeKeyContainer();
-                    return;
-                }
-                
-                // Check if key is expired
-                if (Date.now() > keyData.expiresAt) {
-                    errorMsg.innerText = 'KEY HAS EXPIRED!';
-                    errorMsg.style.display = 'block';
-                    shakeKeyContainer();
-                    return;
-                }
-                
-                // Check device limit
-                const deviceCount = keyData.devices ? Object.keys(keyData.devices).length : 0;
-                if (deviceCount >= keyData.deviceLimit) {
-                    // Check if this device is already registered
-                    if (!keyData.devices || !keyData.devices[currentDeviceId]) {
-                        errorMsg.innerText = 'DEVICE LIMIT REACHED!';
-                        errorMsg.style.display = 'block';
-                        shakeKeyContainer();
-                        return;
-                    }
-                }
-                
-                // Register device if not already registered
-                if (!keyData.devices || !keyData.devices[currentDeviceId]) {
-                    await database.ref('keys/' + keyInput + '/devices/' + currentDeviceId).set({
-                        registeredAt: Date.now(),
-                        lastUsed: Date.now()
-                    });
-                } else {
-                    // Update last used time
-                    await database.ref('keys/' + keyInput + '/devices/' + currentDeviceId + '/lastUsed').set(Date.now());
-                }
-                
-                // Success - save key data
-                currentKeyData = keyData;
-                localStorage.setItem('mickey_active_key', keyInput);
-                localStorage.setItem('mickey_key_data', JSON.stringify(keyData));
-                
-                // Stop video
-                if (videoPlayer) {
-                    videoPlayer.pause();
-                }
-                
-                // Hide key page, show prediction page
-                document.getElementById('key-page').style.display = 'none';
-                document.getElementById('prediction-page').style.display = 'block';
-                
-                // Start countdown
-                startCountdown();
-                
-                // Start predictor
-                startPredictor();
-                
-            } catch (error) {
-                console.error('Key verification error:', error);
-                errorMsg.innerText = 'NETWORK ERROR! TRY AGAIN.';
-                errorMsg.style.display = 'block';
-                shakeKeyContainer();
-            }
-        }
-
-        function shakeKeyContainer() {
-            const keyContainer = document.querySelector('.key-container');
-            keyContainer.style.animation = 'shake 0.5s';
-            setTimeout(() => {
-                keyContainer.style.animation = '';
-            }, 500);
-        }
-
-        // Add CSS for shake animation
-        const style = document.createElement('style');
-        style.innerHTML = `
-            @keyframes shake {
-                0%, 100% { transform: translateX(0); }
-                10%, 30%, 50%, 70%, 90% { transform: translateX(-5px); }
-                20%, 40%, 60%, 80% { transform: translateX(5px); }
-            }
-        `;
-        document.head.appendChild(style);
-
-        // Original functions remain the same with minor adjustments
-        function goBack() {
-            document.getElementById('key-page').style.display = 'none';
-            document.getElementById('landing-page').style.display = 'flex';
-            document.getElementById('error-msg').style.display = 'none';
-            document.getElementById('key-input').value = '';
-            
-            if (videoPlayer) {
-                videoPlayer.pause();
-            }
-        }
-
-        function goToLanding() {
-            document.getElementById('prediction-page').style.display = 'none';
-            document.getElementById('landing-page').style.display = 'flex';
-            stopCountdown();
-        }
-
-        function openKeyPage(platform) {
-            document.getElementById('selected-platform').innerText = platform;
-            document.getElementById('landing-page').style.display = 'none';
-            document.getElementById('key-page').style.display = 'flex';
-            
-            setTimeout(() => {
-                videoPlayer = document.getElementById('security-video');
-                if (videoPlayer) {
-                    videoPlayer.src = 'anime.mp4';
-                    videoPlayer.load();
-                    videoPlayer.play().then(() => {
-                        setTimeout(() => {
-                            videoPlayer.muted = false;
-                            isVideoMuted = false;
-                            updateMuteButton();
-                        }, 500);
-                    }).catch(e => {
-                        console.log("Video play failed:", e);
-                        videoPlayer.muted = true;
-                        videoPlayer.play();
-                        isVideoMuted = true;
-                        updateMuteButton();
-                    });
-                }
-            }, 100);
-            
-            document.getElementById('error-msg').style.display = 'none';
-        }
-
-        function toggleMute() {
-            if (videoPlayer) {
-                videoPlayer.muted = !videoPlayer.muted;
-                isVideoMuted = videoPlayer.muted;
-                updateMuteButton();
-            }
-        }
-
-        function updateMuteButton() {
-            const muteBtn = document.getElementById('mute-btn');
-            if (muteBtn) {
-                if (isVideoMuted) {
-                    muteBtn.innerHTML = '<i class="fas fa-volume-mute"></i>';
-                } else {
-                    muteBtn.innerHTML = '<i class="fas fa-volume-up"></i>';
-                }
-            }
-        }
-
-        function replayVideo() {
-            if (videoPlayer) {
-                videoPlayer.currentTime = 0;
-                videoPlayer.play();
-            }
-        }
-
-        function toggleAnalysis() {
-            const hiddenDiv = document.getElementById('hidden-analysis');
-            hiddenDiv.classList.toggle('active');
-        }
-
-        async function startPredictor() {
-            document.getElementById('analysis-status').innerText = "ANALYZING...";
-            document.getElementById('analysis-status').style.color = "var(--gold)";
-            document.getElementById('algo-status').innerText = "COLLECTING DATA";
-            
-            await updateData(true);
-            setInterval(() => updateData(false), 3000);
-        }
-
-        async function updateData(isInitial = false) {
-            if (isAnalyzing && !isInitial) return;
-            
-            try {
-                const response = await fetch(API_URL);
-                const json = await response.json();
-                const list = json.data.list;
-                const latestItem = list[0];
-                const nextPeriod = (BigInt(latestItem.issueNumber) + 1n).toString();
-                
-                updateLast10Results(list.slice(0, 10));
-                processPendingResults(list);
-                
-                if (nextPeriod !== lastPeriod) {
-                    lastPeriod = nextPeriod;
-                    document.getElementById('current-period').innerText = nextPeriod;
-                    
-                    if (!analysisComplete) {
-                        document.getElementById('analysis-status').innerText = "DEEP ANALYSIS";
-                        document.getElementById('analysis-status').style.color = "var(--blue)";
-                        document.getElementById('algo-status').innerText = "ANALYZING PATTERNS";
-                        
-                        isAnalyzing = true;
-                        setTimeout(() => {
-                            performDeepAnalysis(list);
-                            isAnalyzing = false;
-                            analysisComplete = true;
-                        }, 1500);
+            if(uid.length === 6 && amt && pass === "DEVIL123") {
+                db.ref('users/'+uid).get().then(snap => {
+                    if(snap.exists() && snap.val().status === 'approved') {
+                        document.getElementById('page1').style.display = 'none';
+                        document.getElementById('page2').style.display = 'block';
+                        document.getElementById('uMeta').innerText = `UID: #${uid} | DEPOSIT: ${snap.val().amt}`;
+                        startSync();
                     } else {
-                        document.getElementById('analysis-status').innerText = "UPDATING";
-                        document.getElementById('algo-status').innerText = "SYNCHRONIZED";
-                        quickUpdateAnalysis(list);
-                    }
-                }
-            } catch (e) { 
-                console.error("Update Error", e);
-                document.getElementById('analysis-status').innerText = "ERROR";
-                document.getElementById('analysis-status').style.color = "var(--red)";
-            }
-        }
-
-        function updateLast10Results(data) {
-            last10Results = data.map(item => {
-                const num = parseInt(item.number);
-                const size = num >= 5 ? "BIG" : "SMALL";
-                let color;
-                if (num === 0 || num === 5) {
-                    color = "VIOLET";
-                } else {
-                    color = (num % 2 === 0) ? "RED" : "GREEN";
-                }
-                return {
-                    period: item.issueNumber,
-                    number: item.number,
-                    size: size,
-                    color: color
-                };
-            });
-            
-            updatePatternDisplay();
-            updateDetailedAnalysis();
-        }
-
-        function performDeepAnalysis(list) {
-            const sizeData = last10Results.map(r => r.size);
-            const colorData = last10Results.map(r => r.color);
-            const numbers = last10Results.map(r => parseInt(r.number));
-            
-            const sizePattern = detectPattern(sizeData, ['BIG', 'SMALL']);
-            const colorPattern = detectPattern(colorData, ['RED', 'GREEN', 'VIOLET']);
-            const numberPattern = detectNumberPattern(numbers);
-            
-            document.getElementById('size-pattern').innerText = sizePattern.name;
-            document.getElementById('size-count').innerText = `(${sizePattern.count}x)`;
-            document.getElementById('color-pattern').innerText = colorPattern.name;
-            document.getElementById('color-count').innerText = `(${colorPattern.count}x)`;
-            
-            currentAlgorithm = detectAlgorithm(sizePattern, colorPattern, numberPattern);
-            document.getElementById('algo-pattern').innerText = currentAlgorithm.name;
-            
-            const bigCount = sizeData.filter(s => s === 'BIG').length;
-            const smallCount = sizeData.filter(s => s === 'SMALL').length;
-            const redCount = colorData.filter(c => c === 'RED').length;
-            const greenCount = colorData.filter(c => c === 'GREEN').length;
-            const violetCount = colorData.filter(c => c === 'VIOLET').length;
-            
-            document.getElementById('big-percent').innerText = `${Math.round((bigCount/10)*100)}%`;
-            document.getElementById('small-percent').innerText = `${Math.round((smallCount/10)*100)}%`;
-            document.getElementById('red-percent').innerText = `${Math.round((redCount/10)*100)}%`;
-            document.getElementById('green-percent').innerText = `${Math.round((greenCount/10)*100)}%`;
-            
-            const actualPrediction = calculatePrediction(sizePattern, colorPattern, currentAlgorithm);
-            realPrediction = actualPrediction;
-            const displayPrediction = createOppositePrediction(actualPrediction);
-            
-            applyPredictionUI(displayPrediction, actualPrediction);
-            addToHistory(lastPeriod, actualPrediction, displayPrediction);
-            
-            document.getElementById('algorithm-detector').className = "algorithm-indicator algo-detected";
-            document.getElementById('algo-status').innerText = `DETECTED: ${currentAlgorithm.name}`;
-            document.getElementById('analysis-status').innerText = "ALGO ACTIVE";
-            document.getElementById('analysis-status').style.color = "var(--green)";
-            
-            updateRealPredictionInfo(actualPrediction);
-        }
-
-        function createOppositePrediction(prediction) {
-            let oppositeValue = prediction.value;
-            let oppositeType = prediction.type;
-            
-            if (prediction.type === 'SIZE') {
-                oppositeValue = (prediction.value === 'BIG') ? 'SMALL' : 'BIG';
-            } else if (prediction.type === 'COLOR') {
-                if (prediction.value === 'RED') {
-                    oppositeValue = 'GREEN';
-                } else if (prediction.value === 'GREEN') {
-                    oppositeValue = 'RED';
-                } else if (prediction.value === 'VIOLET') {
-                    oppositeValue = (Math.random() > 0.5) ? 'RED' : 'GREEN';
-                }
-            }
-            
-            return {
-                type: oppositeType,
-                value: oppositeValue,
-                confidence: prediction.confidence,
-                algorithm: prediction.algorithm,
-                isOpposite: true
-            };
-        }
-
-        function quickUpdateAnalysis(list) {
-            const sizeData = last10Results.map(r => r.size);
-            const colorData = last10Results.map(r => r.color);
-            
-            const sizePattern = detectPattern(sizeData, ['BIG', 'SMALL']);
-            const colorPattern = detectPattern(colorData, ['RED', 'REEN', 'VIOLET']);
-            
-            if (sizePattern.count < 3 || colorPattern.count < 2) {
-                document.getElementById('algo-status').innerText = "PATTERN CHANGED";
-                document.getElementById('algorithm-detector').className = "algorithm-indicator algo-analyzing";
-                setTimeout(() => performDeepAnalysis(list), 1000);
-                return;
-            }
-            
-            const numbers = last10Results.map(r => parseInt(r.number));
-            const numberPattern = detectNumberPattern(numbers);
-            const actualPrediction = calculatePrediction(sizePattern, colorPattern, currentAlgorithm);
-            
-            realPrediction = actualPrediction;
-            const displayPrediction = createOppositePrediction(actualPrediction);
-            
-            applyPredictionUI(displayPrediction, actualPrediction);
-            addToHistory(lastPeriod, actualPrediction, displayPrediction);
-            updateRealPredictionInfo(actualPrediction);
-        }
-
-        function detectPattern(data, types) {
-            let currentStreak = 1;
-            for (let i = 1; i < data.length; i++) {
-                if (data[i] === data[i-1]) currentStreak++;
-                else break;
-            }
-            
-            let alternating = true;
-            for (let i = 2; i < data.length; i++) {
-                if (data[i] !== data[i-2]) {
-                    alternating = false;
-                    break;
-                }
-            }
-            
-            const typeCounts = {};
-            types.forEach(type => {
-                typeCounts[type] = data.filter(d => d === type).length;
-            });
-            
-            const dominantType = Object.keys(typeCounts).reduce((a, b) => 
-                typeCounts[a] > typeCounts[b] ? a : b
-            );
-            
-            if (currentStreak >= 3) {
-                return { name: `${dominantType} STREAK`, count: currentStreak, type: 'streak', dominant: dominantType };
-            } else if (alternating && data.length >= 3) {
-                return { name: `ALTERNATING`, count: Math.floor(data.length/2), type: 'alternating' };
-            } else if (typeCounts[dominantType] >= 7) {
-                return { name: `${dominantType} DOMINANT`, count: typeCounts[dominantType], type: 'dominant', dominant: dominantType };
-            } else {
-                return { name: `RANDOM PATTERN`, count: 0, type: 'random' };
-            }
-        }
-
-        function detectNumberPattern(numbers) {
-            const bigNumbers = numbers.filter(n => n >= 5).length;
-            const smallNumbers = numbers.filter(n => n < 5).length;
-            const evenNumbers = numbers.filter(n => n % 2 === 0).length;
-            const oddNumbers = numbers.filter(n => n % 2 === 1).length;
-            const violetNumbers = numbers.filter(n => n === 0 || n === 5).length;
-            
-            const avg = numbers.reduce((a, b) => a + b, 0) / numbers.length;
-            
-            return {
-                bigCount: bigNumbers,
-                smallCount: smallNumbers,
-                evenCount: evenNumbers,
-                oddCount: oddNumbers,
-                violetCount: violetNumbers,
-                average: avg
-            };
-        }
-
-        function detectAlgorithm(sizePattern, colorPattern, numberPattern) {
-            const algorithms = [
-                { name: "MEAN REVERSION", confidence: 0 },
-                { name: "TREND FOLLOWING", confidence: 0 },
-                { name: "PATTERN BREAK", confidence: 0 },
-                { name: "MOMENTUM", confidence: 0 },
-                { name: "COUNTER-TREND", confidence: 0 }
-            ];
-            
-            if (sizePattern.type === 'streak' && sizePattern.count >= 3) {
-                algorithms[0].confidence += 30;
-                algorithms[4].confidence += 20;
-            }
-            
-            if (sizePattern.type === 'dominant') {
-                algorithms[1].confidence += 25;
-                algorithms[3].confidence += 20;
-            }
-            
-            if (colorPattern.type === 'alternating') {
-                algorithms[2].confidence += 35;
-            }
-            
-            if (numberPattern.violetCount >= 2) {
-                algorithms[2].confidence += 20;
-            }
-            
-            const bestAlgo = algorithms.reduce((a, b) => 
-                a.confidence > b.confidence ? a : b
-            );
-            
-            return bestAlgo;
-        }
-
-        function calculatePrediction(sizePattern, colorPattern, algorithm) {
-            let type, value, confidence;
-            const sizeData = last10Results.map(r => r.size);
-            const colorData = last10Results.map(r => r.color);
-            
-            const bigCount = sizeData.filter(s => s === 'BIG').length;
-            const smallCount = sizeData.filter(s => s === 'SMALL').length;
-            const redCount = colorData.filter(c => c === 'RED').length;
-            const greenCount = colorData.filter(c => c === 'GREEN').length;
-            
-            const bigProb = bigCount / 10;
-            const smallProb = smallCount / 10;
-            const redProb = redCount / 10;
-            const greenProb = greenCount / 10;
-            
-            switch(algorithm.name) {
-                case "MEAN REVERSION":
-                    if (sizePattern.type === 'streak' && sizePattern.dominant) {
-                        type = 'SIZE';
-                        value = sizePattern.dominant === 'BIG' ? 'SMALL' : 'BIG';
-                        confidence = 75 + Math.floor(Math.random() * 15);
-                    } else {
-                        type = bigProb > smallProb ? 'SIZE' : 'COLOR';
-                        value = type === 'SIZE' ? 
-                            (bigProb > 0.7 ? 'SMALL' : 'BIG') : 
-                            (redProb > 0.7 ? 'GREEN' : 'RED');
-                        confidence = 70 + Math.floor(Math.random() * 20);
-                    }
-                    break;
-                    
-                case "TREND FOLLOWING":
-                    type = Math.abs(bigProb - 0.5) > Math.abs(redProb - 0.5) ? 'SIZE' : 'COLOR';
-                    if (type === 'SIZE') {
-                        value = bigProb > 0.5 ? 'BIG' : 'SMALL';
-                    } else {
-                        value = redProb > 0.5 ? 'RED' : 'GREEN';
-                    }
-                    confidence = 65 + Math.floor(Math.random() * 25);
-                    break;
-                    
-                case "PATTERN BREAK":
-                    const lastTwoSizes = sizeData.slice(0, 2);
-                    const lastTwoColors = colorData.slice(0, 2);
-                    
-                    if (lastTwoSizes[0] === lastTwoSizes[1]) {
-                        type = 'SIZE';
-                        value = lastTwoSizes[0] === 'BIG' ? 'SMALL' : 'BIG';
-                    } else if (lastTwoColors[0] === lastTwoColors[1]) {
-                        type = 'COLOR';
-                        value = lastTwoColors[0] === 'RED' ? 'GREEN' : 'RED';
-                    } else {
-                        type = 'SIZE';
-                        value = Math.random() > 0.5 ? 'BIG' : 'SMALL';
-                    }
-                    confidence = 68 + Math.floor(Math.random() * 22);
-                    break;
-                    
-                default:
-                    const maxProb = Math.max(bigProb, smallProb, redProb, greenProb);
-                    if (maxProb === bigProb || maxProb === smallProb) {
-                        type = 'SIZE';
-                        value = bigProb > smallProb ? 'BIG' : 'SMALL';
-                    } else {
-                        type = 'COLOR';
-                        value = redProb > greenProb ? 'RED' : 'GREEN';
-                    }
-                    confidence = 60 + Math.floor(Math.random() * 30);
-            }
-            
-            return { type: type, value: value, confidence: confidence, algorithm: algorithm.name };
-        }
-
-        function applyPredictionUI(displayPred, realPred) {
-            const txt = document.getElementById('prediction-text');
-            txt.innerText = displayPred.value;
-            txt.className = "prediction-text " + displayPred.value.toLowerCase();
-
-            document.getElementById('confidence-display').innerText = `CONF: ${displayPred.confidence}%`;
-            document.getElementById('confidence-fill').style.width = displayPred.confidence + "%";
-            document.getElementById('confidence-fill').style.background = 
-                displayPred.confidence > 80 ? 'var(--green)' : 
-                displayPred.confidence > 65 ? 'var(--neon-purple)' : 'var(--orange)';
-            
-            document.getElementById('prediction-type').innerHTML = 
-                `<i class="fas fa-${displayPred.type === 'SIZE' ? 'expand' : 'palette'}"></i> ${displayPred.type} | Algorithm: ${displayPred.algorithm}`;
-        }
-
-        function updateRealPredictionInfo(prediction) {
-            const infoDiv = document.getElementById('real-prediction-info');
-            if (infoDiv) {
-                infoDiv.innerHTML = `
-                    <span class="${prediction.value.toLowerCase()}">${prediction.value}</span> 
-                    <span style="color:var(--neon-purple)">(${prediction.type})</span><br>
-                    <span style="font-size:0.8rem; color:var(--gold)">${prediction.confidence}% Confidence</span>
-                `;
-            }
-            
-            const noteDiv = document.getElementById('opposite-note');
-            if (noteDiv) {
-                let oppositeValue = '';
-                if (prediction.type === 'SIZE') {
-                    oppositeValue = (prediction.value === 'BIG') ? 'SMALL' : 'BIG';
-                } else {
-                    oppositeValue = (prediction.value === 'RED') ? 'GREEN' : 'RED';
-                }
-                noteDiv.innerHTML = `<i class="fas fa-info-circle"></i> Display shows <span style="color:var(--orange)">${oppositeValue}</span> instead of ${prediction.value}`;
-            }
-        }
-
-        function updatePatternDisplay() {
-            const container = document.getElementById('pattern-display');
-            container.innerHTML = "";
-            last10Results.forEach(item => {
-                const sizeClass = item.size.toLowerCase();
-                const colorClass = item.color.toLowerCase();
-                const div = document.createElement('div');
-                div.className = `pattern-item`;
-                div.innerHTML = `
-                    <div style="font-weight:bold; margin-bottom:2px;">${item.period.slice(-3)}</div>
-                    <div class="${colorClass}" style="font-size:1.1rem;">${item.number}</div>
-                    <div style="font-size:0.7rem; margin-top:2px;">
-                        <span class="${sizeClass}">${item.size.charAt(0)}</span> | 
-                        <span class="${colorClass}">${item.color.charAt(0)}</span>
-                    </div>
-                `;
-                container.appendChild(div);
-            });
-        }
-
-        function updateDetailedAnalysis() {
-            const container = document.getElementById('detailed-analysis');
-            if (!container) return;
-            
-            let html = '<div class="analysis-data">';
-            last10Results.forEach((item, index) => {
-                html += `
-                    <div class="analysis-item" style="width:100%; border-bottom:1px dashed rgba(255,255,255,0.1); padding:3px 0;">
-                        Period ${item.period.slice(-4)}: 
-                        <span style="color:var(--gold)">${item.number}</span> | 
-                        <span class="${item.size.toLowerCase()}">${item.size}</span> | 
-                        <span class="${item.color.toLowerCase()}">${item.color}</span>
-                    </div>
-                `;
-            });
-            html += '</div>';
-            container.innerHTML = html;
-        }
-
-        function processPendingResults(list) {
-            if (historyData.length > 0) {
-                historyData.forEach(item => {
-                    if (item.status === 'PENDING') {
-                        const match = list.find(l => l.issueNumber === item.period);
-                        if (match) {
-                            const num = parseInt(match.number);
-                            const realSize = num >= 5 ? "BIG" : "SMALL";
-                            let realColor;
-                            if (num === 0 || num === 5) {
-                                realColor = "VIOLET";
-                            } else {
-                                realColor = (num % 2 === 0) ? "RED" : "GREEN";
-                            }
-                            
-                            let isWin = false;
-                            if(item.displayType === 'SIZE' && item.displayValue === realSize) isWin = true;
-                            if(item.displayType === 'COLOR' && item.displayValue === realColor) isWin = true;
-                            
-                            item.status = isWin ? 'WIN' : 'LOSS';
-                            item.realValue = `${match.number} (${realSize}/${realColor})`;
-                            
-                            totalPredictions++;
-                            if(isWin) { 
-                                winStreak++; 
-                                lossStreak = 0; 
-                                correctPredictions++;
-                            } else { 
-                                lossStreak++; 
-                                winStreak = 0; 
-                            }
-                            
-                            document.getElementById('streak-info').innerText = `${winStreak} WIN / ${lossStreak} LOSS`;
-                            document.getElementById('current-streak').innerText = 
-                                winStreak > 0 ? `W${winStreak}` : `L${lossStreak}`;
-                            
-                            const accuracy = totalPredictions > 0 ? 
-                                Math.round((correctPredictions / totalPredictions) * 100) : 0;
-                            document.getElementById('accuracy-rate').innerText = `${accuracy}%`;
-                            
-                            renderHistory();
-                        }
+                        db.ref('users/'+uid).set({uid, amt, status:'pending'});
+                        alert("Wait for Admin Approval!");
                     }
                 });
-            }
+            } else { alert("Details check karein!"); }
         }
 
-        function addToHistory(period, actualPred, displayPred) {
-            historyData.unshift({ 
-                period: period, 
-                type: actualPred.type,
-                value: actualPred.value,
-                displayType: displayPred.type,
-                displayValue: displayPred.value,
-                algorithm: actualPred.algorithm,
-                status: 'PENDING',
-                confidence: actualPred.confidence
-            });
+        // 2. ADMIN CONTROL
+        function sendPred() {
+            const period = document.getElementById('admPeriod').value;
+            const choice = document.getElementById('admChoice').value;
+            if(!period) return alert("Period enter karo!");
+
+            const key = db.ref('game_history').push().key;
+            const data = { id: key, period: period, result: choice, status: 'undefined' };
             
-            if(historyData.length > 15) historyData.pop();
-            renderHistory();
+            db.ref('global_pred').set(data);
+            db.ref('game_history/' + key).set(data);
+            document.getElementById('admPeriod').value = "";
         }
 
-        function renderHistory() {
-            const container = document.getElementById('history-list');
-            container.innerHTML = "";
-            historyData.forEach(item => {
-                const div = document.createElement('div');
-                div.className = 'history-item';
-                const statusClass = item.status.toLowerCase();
-                div.innerHTML = `
-                    <div style="display:flex; flex-direction:column; font-size:0.8rem;">
-                        <span>#${item.period.slice(-4)}</span>
-                        <span style="font-size:0.7rem; color:#aaa;">${item.algorithm || ''}</span>
-                    </div>
-                    <div style="display:flex; flex-direction:column; align-items:center;">
-                        <span class="${item.displayValue.toLowerCase()}" style="font-weight:bold; font-size:1.1rem;">${item.displayValue}</span>
-                        <span style="font-size:0.7rem; color:rgba(255,255,255,0.5);">(${item.displayType})</span>
-                    </div>
-                    <div style="display:flex; flex-direction:column; align-items:flex-end;">
-                        <span class="${statusClass}" style="font-weight:bold;">${item.status}</span>
-                        ${item.realValue ? 
-                            `<span style="font-size:0.7rem; color:#aaa;">${item.realValue}</span>` : 
-                            `<span style="font-size:0.7rem; color:var(--gold);">${item.confidence}%</span>`
-                        }
-                    </div>
-                `;
-                container.appendChild(div);
+        function updateResult(id, val) {
+            db.ref('game_history/'+id).update({ status: val });
+            db.ref('global_pred').once('value').then(s => {
+                if(s.val().id === id) db.ref('global_pred').update({ status: val });
             });
         }
-        
-        // Enter key support for password input
-        document.getElementById('key-input').addEventListener('keypress', function(event) {
-            if (event.key === 'Enter') {
-                verifyKey();
+
+        // 3. SYSTEM SYNC
+        function startSync() {
+            db.ref('global_pred').on('value', s => {
+                const d = s.val();
+                if(d) {
+                    document.getElementById('pText').innerText = d.result;
+                    const box = document.getElementById('pBox');
+                    if(d.status === 'WIN') {
+                        box.style.borderColor = "#00ff99"; box.style.boxShadow = "0 0 20px #00ff99";
+                        document.getElementById('pText').style.color = "#00ff99";
+                    } else if(d.status === 'LOSS') {
+                        box.style.borderColor = "#ff0055"; box.style.boxShadow = "0 0 20px #ff0055";
+                        document.getElementById('pText').style.color = "#ff0055";
+                    }
+                }
+            });
+
+            db.ref('game_history').on('value', s => {
+                const data = s.val();
+                const uH = document.getElementById('userHistoryList');
+                const aH = document.getElementById('adminHistoryList');
+                if(uH) uH.innerHTML = ""; if(aH) aH.innerHTML = "";
+                if(data) {
+                    Object.values(data).reverse().forEach(h => {
+                        uH.innerHTML += `<div class="history-item">
+                            <span>${h.period}</span><span>${h.result.toLowerCase()}</span>
+                            <span style="color:${h.status==='WIN'?'#00ff99':h.status==='LOSS'?'#ff0055':''}">${h.status.toLowerCase()}</span>
+                        </div>`;
+                        aH.innerHTML += `<div class="history-item">
+                            <span>#${h.period}</span>
+                            <button onclick="updateResult('${h.id}','WIN')" style="color:#00ff99;background:none;border:none;cursor:pointer;">WIN</button>
+                            <button onclick="updateResult('${h.id}','LOSS')" style="color:#ff0055;background:none;border:none;cursor:pointer;margin-left:10px;">LOSS</button>
+                        </div>`;
+                    });
+                }
+            });
+        }
+
+        function adminAccess() {
+            if(prompt("Admin Access:") === "123") {
+                document.getElementById('page1').style.display='none';
+                document.getElementById('page2').style.display='none';
+                document.getElementById('adminSection').style.display='block';
+                startSync();
             }
-        });
+        }
     </script>
 </body>
 </html>
