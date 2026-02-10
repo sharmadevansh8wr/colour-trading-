@@ -135,7 +135,7 @@
             const pass = document.getElementById('passInput').value;
             const amt = document.getElementById('depositAmt').value;
 
-            if(uid.length === 6 && amt && pass === "DEVIL123") {
+            if(uid.length === 8 && amt && pass === "DEVIL123") {
                 db.ref('users/'+uid).get().then(snap => {
                     if(snap.exists() && snap.val().status === 'approved') {
                         document.getElementById('page1').style.display = 'none';
